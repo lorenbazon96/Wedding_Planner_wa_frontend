@@ -5,11 +5,15 @@
     >
       <div class="d-flex align-items-center gap-3">
         <img src="@/assets/logo.png" alt="Wedding Planner" class="top-logo" />
-        <div>
-          <h3 class="mb-0 fancy-name">Ivan &amp; Ivana</h3>
-          <small>15.11.2026.</small>
-        </div>
+
+        <router-link to="/edit" class="wedding-info-link text-decoration-none">
+          <div class="wedding-info">
+            <h3 class="mb-0 fancy-name">Ivan &amp; Ivana</h3>
+            <small>15.11.2026.</small>
+          </div>
+        </router-link>
       </div>
+
       <div class="remaining-pill">15 days left</div>
     </header>
 
@@ -75,18 +79,38 @@ export default {
   flex-direction: column;
   gap: 1rem;
 }
+
 .topbar {
   background: rgba(245, 235, 218, 0.441);
 }
+
 .top-logo {
   height: 140px;
   filter: hue-rotate(190deg) saturate(2) brightness(0.55);
+}
+
+.wedding-info-link {
+  color: inherit;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  padding: 0.2rem 0.5rem;
+}
+
+.wedding-info-link:hover {
+  background: rgba(212, 175, 55, 0.15);
+  transform: translateY(-2px);
+  cursor: pointer;
 }
 
 .fancy-name {
   font-family: "Italianno", cursive;
   font-size: 3rem;
   line-height: 1;
+  color: #2b2b2b;
+}
+
+.wedding-info small {
+  color: #333;
 }
 
 .remaining-pill {
