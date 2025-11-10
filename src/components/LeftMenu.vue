@@ -17,6 +17,17 @@
 </template>
 
 <script>
+import bride from "@/assets/bride.png";
+import groom from "@/assets/groom.png";
+import church from "@/assets/church.png";
+import hall from "@/assets/hall.png";
+import flowers from "@/assets/flowers.png";
+import budget from "@/assets/budget.png";
+import note from "@/assets/note.png";
+import guests from "@/assets/guests.png";
+import chat from "@/assets/chat.png";
+import ring from "@/assets/ring.png";
+
 export default {
   name: "LeftMenu",
   props: {
@@ -28,48 +39,48 @@ export default {
         {
           id: "bride",
           name: "Bride",
-          icon: "https://picsum.photos/40?random=1",
+          icon: bride,
         },
         {
           id: "groom",
           name: "Groom",
-          icon: "https://picsum.photos/40?random=2",
+          icon: groom,
         },
         {
           id: "flowers",
           name: "Flowers",
-          icon: "https://picsum.photos/40?random=3",
+          icon: flowers,
         },
         {
           id: "church",
           name: "Church",
-          icon: "https://picsum.photos/40?random=4",
+          icon: church,
         },
         {
           id: "hall",
           name: "Wedding hall",
-          icon: "https://picsum.photos/40?random=5",
+          icon: hall,
         },
         {
           id: "budget",
           name: "Budget",
-          icon: "https://picsum.photos/40?random=6",
+          icon: budget,
         },
         {
           id: "notes",
           name: "Notes",
-          icon: "https://picsum.photos/40?random=7",
+          icon: note,
         },
         {
           id: "guests",
           name: "Guests",
-          icon: "https://picsum.photos/40?random=8",
+          icon: guests,
         },
-        { id: "chat", name: "Chat", icon: "https://picsum.photos/40?random=9" },
+        { id: "chat", name: "Chat", icon: chat },
         {
           id: "day",
           name: "THE Day",
-          icon: "https://picsum.photos/40?random=10",
+          icon: ring,
         },
       ],
     };
@@ -89,6 +100,9 @@ export default {
   padding: 0.4rem 0.6rem;
   border-radius: 999px 0 0 999px;
   transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 .left-item.active,
 .left-item:hover {
@@ -97,8 +111,10 @@ export default {
 .icon-img {
   width: 32px;
   height: 32px;
-  border-radius: 999px;
-  object-fit: cover;
+  flex: 0 0 32px;
+  object-fit: contain;
+  filter: invert(16%) sepia(89%) saturate(894%) hue-rotate(199deg)
+    brightness(90%) contrast(90%);
 }
 .item-text {
   font-weight: 500;

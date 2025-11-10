@@ -17,6 +17,36 @@
 </template>
 
 <script>
+import bride from "@/assets/bride.png";
+import ring from "@/assets/ring.png";
+import hairdresser from "@/assets/hairdresser.png";
+import heels from "@/assets/heels.png";
+import nails from "@/assets/nails.png";
+import maid from "@/assets/maid.png";
+import tai from "@/assets/tai.png";
+import groom from "@/assets/groom.png";
+import shirt from "@/assets/shirt.png";
+import suit from "@/assets/suit.png";
+import shoes from "@/assets/shoes.png";
+import car from "@/assets/car.png";
+import barber from "@/assets/barber.png";
+import time from "@/assets/time.png";
+import church from "@/assets/church.png";
+import flowers from "@/assets/flowers.png";
+import lapel from "@/assets/lapel.png";
+import bouquet from "@/assets/bouquet.png";
+import engagement from "@/assets/engagement.png";
+import music from "@/assets/music.png";
+import priest from "@/assets/priest.png";
+import note from "@/assets/note.png";
+import readers from "@/assets/readers.png";
+import confetti from "@/assets/confetti.png";
+import band from "@/assets/band.png";
+import menu from "@/assets/menu.png";
+import halla from "@/assets/halla.png";
+import cake from "@/assets/cake.png";
+import dance from "@/assets/dance.png";
+
 export default {
   name: "SubMenu",
   props: {
@@ -29,58 +59,57 @@ export default {
         bride: [
           {
             label: "Wedding dress",
-            icon: "https://picsum.photos/36?random=11",
+            icon: bride,
           },
-          { label: "Rings", icon: "https://picsum.photos/36?random=12" },
-          { label: "Shoes", icon: "https://picsum.photos/36?random=13" },
-          { label: "Hairdresser", icon: "https://picsum.photos/36?random=14" },
-          { label: "Nails", icon: "https://picsum.photos/36?random=15" },
+          { label: "Rings", icon: ring },
+          { label: "Shoes", icon: heels },
+          { label: "Hairdresser", icon: hairdresser },
+          { label: "Nails", icon: nails },
           {
             label: "Maid of Honor",
-            icon: "https://picsum.photos/36?random=16",
+            icon: maid,
           },
         ],
         groom: [
-          { label: "Tai", icon: "https://picsum.photos/36?random=20" },
-          { label: "Shoes", icon: "https://picsum.photos/36?random=17" },
-          { label: "Shirt", icon: "https://picsum.photos/36?random=18" },
-          { label: "Suit", icon: "https://picsum.photos/36?random=19" },
-          { label: "Hairdresser", icon: "https://picsum.photos/36?random=20" },
-          { label: "Barber", icon: "https://picsum.photos/36?random=20" },
-          { label: "Best Man", icon: "https://picsum.photos/36?random=20" },
+          { label: "Tie", icon: tai },
+          { label: "Shoes", icon: shoes },
+          { label: "Shirt", icon: shirt },
+          { label: "Suit", icon: suit },
+          { label: "Hairdresser", icon: hairdresser },
+          { label: "Barber", icon: barber },
+          { label: "Best Man", icon: groom },
         ],
         flowers: [
-          { label: "Bouquet", icon: "https://picsum.photos/36?random=21" },
-          { label: "Lapel", icon: "https://picsum.photos/36?random=22" },
+          { label: "Bouquet", icon: bouquet },
+          { label: "Lapel", icon: lapel },
           {
             label: "Car flowers",
-            icon: "https://picsum.photos/36?random=23",
+            icon: car,
           },
-          { label: "Hall flowers", icon: "https://picsum.photos/36?random=22" },
+          { label: "Hall flowers", icon: flowers },
           {
             label: "Church flowers",
-            icon: "https://picsum.photos/36?random=22",
+            icon: church,
           },
         ],
         church: [
-          { label: "Date & Time", icon: "https://picsum.photos/36?random=24" },
+          { label: "Date & Time", icon: time },
           {
             label: "Engagement course",
-            icon: "https://picsum.photos/36?random=25",
+            icon: engagement,
           },
-          { label: "Music", icon: "https://picsum.photos/36?random=26" },
-          { label: "A Priest", icon: "https://picsum.photos/36?random=26" },
-          { label: "Readers", icon: "https://picsum.photos/36?random=26" },
-          { label: "Documents", icon: "https://picsum.photos/36?random=26" },
-          { label: "Confetti", icon: "https://picsum.photos/36?random=26" },
+          { label: "Music", icon: music },
+          { label: "A Priest", icon: priest },
+          { label: "Readers", icon: readers },
+          { label: "Documents", icon: note },
+          { label: "Confetti", icon: confetti },
         ],
         hall: [
-          { label: "Hall", icon: "https://picsum.photos/36?random=27" },
-          { label: "Menu", icon: "https://picsum.photos/36?random=28" },
-          { label: "Cake", icon: "https://picsum.photos/36?random=28" },
-          { label: "Band", icon: "https://picsum.photos/36?random=28" },
-          { label: "First dance", icon: "https://picsum.photos/36?random=28" },
-          { label: "Flag bearer", icon: "https://picsum.photos/36?random=28" },
+          { label: "Hall", icon: halla },
+          { label: "Menu", icon: menu },
+          { label: "Cake", icon: cake },
+          { label: "Band", icon: band },
+          { label: "First dance", icon: dance },
         ],
       };
       return map[this.category] || [];
@@ -101,6 +130,9 @@ export default {
   padding: 0.5rem 0.8rem;
   border-radius: 999px;
   transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 .sub-item.active,
 .sub-item:hover {
@@ -108,9 +140,11 @@ export default {
   color: #fff;
 }
 .icon-img {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  object-fit: cover;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  object-fit: contain;
+  filter: invert(16%) sepia(89%) saturate(894%) hue-rotate(199deg)
+    brightness(90%) contrast(90%);
 }
 </style>
