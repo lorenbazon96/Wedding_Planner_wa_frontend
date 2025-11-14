@@ -76,6 +76,49 @@
       <MaidOfHonorCard />
     </div>
 
+    <div v-else-if="showTie" class="flex-grow-1 overflow-auto pe-1">
+      <TieCard v-for="item in filteredTie" :key="item.id" :tie="item" />
+    </div>
+
+    <div v-else-if="showShoesG" class="flex-grow-1 overflow-auto pe-1">
+      <ShoesGCard
+        v-for="item in filteredStoresG"
+        :key="item.id"
+        :storeg="item"
+      />
+    </div>
+
+    <div v-else-if="showShirts" class="flex-grow-1 overflow-auto pe-1">
+      <ShirtCard
+        v-for="shirt in filteredShirts"
+        :key="shirt.id"
+        :shirt="shirt"
+      />
+    </div>
+
+    <div v-else-if="showSuit" class="flex-grow-1 overflow-auto pe-1">
+      <SuitCard v-for="item in filteredSuits" :key="item.id" :suit="item" />
+    </div>
+
+    <div v-else-if="showHairdresserG" class="flex-grow-1 overflow-auto pe-1">
+      <HairdresserGCard
+        v-for="hairdresser in filteredHairdresserG"
+        :key="hairdresser.id"
+        :hairdresser="hairdresser"
+      />
+    </div>
+
+    <div v-else-if="showBarber" class="flex-grow-1 overflow-auto pe-1">
+      <BarberCard
+        v-for="barber in filteredBarbers"
+        :key="barber.id"
+        :barber="barber"
+      />
+    </div>
+    <div v-else-if="showBestMan" class="flex-grow-1 overflow-auto pe-1">
+      <BestManCard />
+    </div>
+
     <div v-else-if="showBudget" class="flex-grow-1 p-3 d-flex flex-column">
       <div class="bg-white rounded-4 shadow-sm p-3 d-flex flex-column h-100">
         <h5 class="fw-bold mb-3 text-center">Wedding Budget Items</h5>
@@ -219,6 +262,13 @@ import ShoesCard from "./ShoesCard.vue";
 import HairdresserCard from "./HairdresserCard.vue";
 import CozmeticCard from "./CozmeticCard.vue";
 import MaidOfHonorCard from "./MaidOfHonorCard.vue";
+import TieCard from "./TieCard.vue";
+import ShoesGCard from "./ShoesGCard.vue";
+import ShirtCard from "./ShirtCard.vue";
+import SuitCard from "./SuitCard.vue";
+import HairdresserGCard from "./HairdresserGCard.vue";
+import BarberCard from "./BarberCard.vue";
+import BestManCard from "./BestManCard.vue";
 
 import bride from "@/assets/bride.png";
 import ring from "@/assets/ring.png";
@@ -259,6 +309,13 @@ export default {
     HairdresserCard,
     CozmeticCard,
     MaidOfHonorCard,
+    TieCard,
+    ShoesGCard,
+    ShirtCard,
+    SuitCard,
+    HairdresserGCard,
+    BarberCard,
+    BestManCard,
   },
   props: {
     category: String,
@@ -471,16 +528,155 @@ export default {
           img: "https://picsum.photos/420/200?random=62",
         },
       ],
+      ties: [
+        {
+          id: 1,
+          name: "Croata",
+          rating: 4.9,
+          address: "Oktogon, Ilica 6, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=60",
+        },
+        {
+          id: 2,
+          name: "Galileo",
+          rating: 4.9,
+          address: "Medvedgradska 12",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=61",
+        },
+      ],
+      shopsg: [
+        {
+          id: 1,
+          name: "Aldo",
+          rating: 4.9,
+          address: "Varšavska 46, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=50",
+        },
+        {
+          id: 2,
+          name: "Mass",
+          rating: 4.9,
+          address: "Ilica 8, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=51",
+        },
+        {
+          id: 3,
+          name: "Modivo",
+          rating: 4.7,
+          address: "Vukovarska ul. 6, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=52",
+        },
+      ],
+      shirts: [
+        {
+          id: 1,
+          name: "Classic White Shirt",
+          rating: 4.9,
+          address: "Varšavska 10, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=70",
+        },
+        {
+          id: 2,
+          name: "Slim Fit Blue Shirt",
+          rating: 4.7,
+          address: "Ilica 25, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=71",
+        },
+      ],
+      suits: [
+        {
+          id: 1,
+          name: "Jeordie's",
+          rating: 4.9,
+          address: "Ilica 12, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=100",
+        },
+        {
+          id: 2,
+          name: "Martin Arbanas",
+          rating: 4.7,
+          address: "Savska 5, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=101",
+        },
+        {
+          id: 3,
+          name: "Suitbox",
+          rating: 4.7,
+          address: "Savska 5, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=1021",
+        },
+      ],
+      hairSalonG: [
+        {
+          id: 1,
+          name: "Gentlemen's Cut",
+          rating: 4.8,
+          address: "Ilica 10, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=730",
+        },
+        {
+          id: 2,
+          name: "Barber King",
+          rating: 4.9,
+          address: "Vukovarska 15, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=741",
+        },
+      ],
+      barbers: [
+        {
+          id: 1,
+          name: "Barber Shop One",
+          rating: 4.8,
+          address: "Trg bana J. Jelačića 5, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=70",
+        },
+        {
+          id: 2,
+          name: "Classic Barber",
+          rating: 4.7,
+          address: "Ilica 20, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=71",
+        },
+        {
+          id: 3,
+          name: "The Royal Barber Shop",
+          rating: 4.7,
+          address: "Froudeova ulica 9., Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=731",
+        },
+        {
+          id: 4,
+          name: "Brijačko - frizerski salon Man style",
+          rating: 4.7,
+          address: "Nova Cesta 171, Zagreb",
+          status: "open",
+          img: "https://picsum.photos/420/200?random=571",
+        },
+      ],
     };
   },
   computed: {
     showSalons() {
       return (
-        (this.category === "bride" &&
-          !["Rings", "Shoes", "Hairdresser", "Nails", "Maid of Honor"].includes(
-            this.sub
-          )) ||
-        ["groom", "flowers", "church", "hall"].includes(this.category)
+        this.category === "bride" &&
+        !["Rings", "Shoes", "Hairdresser", "Nails", "Maid of Honor"].includes(
+          this.sub
+        )
       );
     },
     showRings() {
@@ -498,6 +694,28 @@ export default {
     showMaidOfHonor() {
       return this.category === "bride" && this.sub === "Maid of Honor";
     },
+    showTie() {
+      return this.category === "groom" && this.sub === "Tie";
+    },
+    showShoesG() {
+      return this.category === "groom" && this.sub === "Shoes";
+    },
+    showShirts() {
+      return this.category === "groom" && this.sub === "Shirt";
+    },
+    showSuit() {
+      return this.category === "groom" && this.sub === "Suit";
+    },
+    showHairdresserG() {
+      return this.category === "groom" && this.sub === "Hairdresser";
+    },
+    showBarber() {
+      return this.category === "groom" && this.sub === "Barber";
+    },
+    showBestMan() {
+      return this.category === "groom" && this.sub === "Best Man";
+    },
+
     filteredSalons() {
       if (!this.search) return this.salons;
       return this.salons.filter((s) =>
@@ -528,6 +746,43 @@ export default {
         s.name.toLowerCase().includes(this.search.toLowerCase())
       );
     },
+    filteredTie() {
+      if (!this.search) return this.ties;
+      return this.ties.filter((t) =>
+        t.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredStoresG() {
+      if (!this.search) return this.shopsg;
+      return this.shopsg.filter((s) =>
+        s.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredShirts() {
+      if (!this.search) return this.shirts;
+      return this.shirts.filter((s) =>
+        s.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredSuits() {
+      if (!this.search) return this.suits;
+      return this.suits.filter((s) =>
+        s.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredHairdresserG() {
+      if (!this.search) return this.hairSalonG;
+      return this.hairSalonG.filter((s) =>
+        s.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredBarbers() {
+      if (!this.search) return this.barbers;
+      return this.barbers.filter((b) =>
+        b.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+
     showBudget() {
       return this.category === "budget";
     },
