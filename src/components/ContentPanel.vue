@@ -119,6 +119,96 @@
       <BestManCard />
     </div>
 
+    <div v-else-if="showLapel" class="flex-grow-1 overflow-auto pe-1">
+      <LapelCard />
+    </div>
+    <div v-else-if="showBouquet" class="flex-grow-1 overflow-auto pe-1">
+      <BouquetCard
+        v-for="flower in flowers"
+        :key="flower.id"
+        :flower="flower"
+      />
+    </div>
+    <div v-else-if="showCarFlowers" class="flex-grow-1 overflow-auto pe-1">
+      <CarFlowersCard
+        v-for="car in filteredCarFlowers"
+        :key="car.id"
+        :car="car"
+      />
+    </div>
+    <div v-else-if="showHallFlowers" class="flex-grow-1 overflow-auto pe-1">
+      <HallFlowersCard
+        v-for="hall in filteredHallFlowers"
+        :key="hall.id"
+        :hall="hall"
+      />
+    </div>
+    <div v-else-if="showChurchFlowers" class="flex-grow-1 overflow-auto pe-1">
+      <ChurchFlowersCard
+        v-for="church in filteredChurchFlowers"
+        :key="church.id"
+        :church="church"
+      />
+    </div>
+
+    <div v-else-if="showDateAndTime" class="flex-grow-1 overflow-auto pe-1">
+      <DateAndTimeCard />
+    </div>
+
+    <div v-else-if="showEngagement" class="flex-grow-1 overflow-auto pe-1">
+      <EngagementCard />
+    </div>
+
+    <div v-else-if="showMusic" class="flex-grow-1 overflow-auto pe-1">
+      <MusicCard
+        v-for="music in filteredMusic"
+        :key="music.id"
+        :music="music"
+      />
+    </div>
+
+    <div
+      v-else-if="category === 'church' && sub === 'A Priest'"
+      class="flex-grow-1 overflow-auto pe-1"
+    >
+      <APriestCard />
+    </div>
+
+    <div
+      v-else-if="category === 'church' && sub === 'Readers'"
+      class="flex-grow-1 overflow-auto pe-1"
+    >
+      <ReadersCard />
+    </div>
+
+    <div v-else-if="showDocuments" class="flex-grow-1 overflow-auto pe-1">
+      <DocumentCard />
+    </div>
+
+    <div v-else-if="showConfetti" class="flex-grow-1 overflow-auto pe-1">
+      <ConfettiCard />
+    </div>
+
+    <div v-else-if="showHalls" class="flex-grow-1 overflow-auto pe-1">
+      <HallCard v-for="hall in filteredHalls" :key="hall.id" :hall="hall" />
+    </div>
+
+    <div v-else-if="showMenu" class="flex-grow-1 overflow-auto pe-1">
+      <MenuCard />
+    </div>
+
+    <div v-else-if="showCakes" class="flex-grow-1 overflow-auto pe-1">
+      <CakeCard v-for="cake in filteredCakes" :key="cake.id" :cake="cake" />
+    </div>
+
+    <div v-else-if="showBands" class="flex-grow-1 overflow-auto pe-1">
+      <BandCard v-for="band in filteredBands" :key="band.id" :band="band" />
+    </div>
+
+    <div v-else-if="showDance" class="flex-grow-1 overflow-auto pe-1">
+      <DanceCard />
+    </div>
+
     <div v-else-if="showBudget" class="flex-grow-1 p-3 d-flex flex-column">
       <div class="bg-white rounded-4 shadow-sm p-3 d-flex flex-column h-100">
         <h5 class="fw-bold mb-3 text-center">Wedding Budget Items</h5>
@@ -269,6 +359,23 @@ import SuitCard from "./SuitCard.vue";
 import HairdresserGCard from "./HairdresserGCard.vue";
 import BarberCard from "./BarberCard.vue";
 import BestManCard from "./BestManCard.vue";
+import LapelCard from "./LapelCard.vue";
+import BouquetCard from "./BouquetCard.vue";
+import CarFlowersCard from "./CarFlowersCard.vue";
+import HallFlowersCard from "./HallFlowersCard.vue";
+import ChurchFlowersCard from "./ChurchFlowersCard.vue";
+import DateAndTimeCard from "./DateAndTimeCard.vue";
+import EngagementCard from "./EngagementCard.vue";
+import MusicCard from "./MusicCard.vue";
+import APriestCard from "./APriestCard.vue";
+import ReadersCard from "./ReadersCard.vue";
+import DocumentCard from "./DocumentCard.vue";
+import ConfettiCard from "./ConfettiCard.vue";
+import HallCard from "./HallCard.vue";
+import MenuCard from "./MenuCard.vue";
+import CakeCard from "./CakeCard.vue";
+import BandCard from "./BandCard.vue";
+import DanceCard from "./DanceCard.vue";
 
 import bride from "@/assets/bride.png";
 import ring from "@/assets/ring.png";
@@ -316,6 +423,23 @@ export default {
     HairdresserGCard,
     BarberCard,
     BestManCard,
+    LapelCard,
+    BouquetCard,
+    CarFlowersCard,
+    HallFlowersCard,
+    ChurchFlowersCard,
+    DateAndTimeCard,
+    EngagementCard,
+    MusicCard,
+    APriestCard,
+    ReadersCard,
+    DocumentCard,
+    ConfettiCard,
+    HallCard,
+    MenuCard,
+    CakeCard,
+    BandCard,
+    DanceCard,
   },
   props: {
     category: String,
@@ -385,7 +509,7 @@ export default {
 
         { label: "Date & Time", icon: time, planned: 0, spent: 0 },
         { label: "Engagement course", icon: engagement, planned: 50, spent: 0 },
-        { label: "Music (church)", icon: music, planned: 120, spent: 0 },
+        { label: "Music", icon: music, planned: 120, spent: 0 },
         { label: "A Priest", icon: priest, planned: 50, spent: 0 },
         { label: "Readers", icon: readers, planned: 0, spent: 0 },
         { label: "Documents", icon: note, planned: 30, spent: 0 },
@@ -668,6 +792,182 @@ export default {
           img: "https://picsum.photos/420/200?random=571",
         },
       ],
+      flowers: [
+        {
+          id: 1,
+          name: "Cvjećarnica Ljubica",
+          img: "https://example.com/flora.jpg",
+          rating: 4.9,
+          address: "Meštrovićev trg 2",
+          status: "Open until 20:00",
+        },
+        {
+          id: 2,
+          name: "Cvjećarnica Orhideja",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Horvaćanska cesta 26",
+          status: "Closes soon",
+        },
+        {
+          id: 3,
+          name: "Cvjećarnica Ljiljana",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Ilica 26",
+          status: "Closes soon",
+        },
+        {
+          id: 4,
+          name: "Cvjećarnica Ruža",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Tkalčićeva 15, 10000 Zagreb",
+          status: "Closes soon",
+        },
+      ],
+      carFlowers: [
+        {
+          id: 1,
+          name: "Cvjećarnica Ljubica",
+          img: "https://example.com/flora.jpg",
+          rating: 4.9,
+          address: "Meštrovićev trg 2",
+          status: "Open until 20:00",
+        },
+        {
+          id: 2,
+          name: "Cvjećarnica Orhideja",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Horvaćanska cesta 26",
+          status: "Closes soon",
+        },
+      ],
+      hallFlowers: [
+        {
+          id: 1,
+          name: "Cvjećarnica Ljubica",
+          img: "https://example.com/flora.jpg",
+          rating: 4.9,
+          address: "Meštrovićev trg 2",
+          status: "Open until 20:00",
+        },
+        {
+          id: 2,
+          name: "Cvjećarnica Orhideja",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Horvaćanska cesta 26",
+          status: "Closes soon",
+        },
+      ],
+      churchFlowers: [
+        {
+          id: 1,
+          name: "Cvjećarnica Ljubica",
+          img: "https://example.com/flora.jpg",
+          rating: 4.9,
+          address: "Meštrovićev trg 2",
+          status: "Open until 20:00",
+        },
+        {
+          id: 2,
+          name: "Cvjećarnica Orhideja",
+          img: "https://example.com/rose.jpg",
+          rating: 4.8,
+          address: "Horvaćanska cesta 26",
+          status: "Closes soon",
+        },
+      ],
+      music: [
+        {
+          id: 1,
+          name: "Joy",
+          rating: 4.9,
+          address: "Trg bana J. Jelačića 1, Zagreb",
+          status: "Available",
+          img: "https://picsum.photos/420/200?random=201",
+        },
+        {
+          id: 2,
+          name: "Tragovi",
+          rating: 4.7,
+          address: "Ilica 10, Zagreb",
+          status: "Booked",
+          img: "https://picsum.photos/420/200?random=202",
+        },
+        {
+          id: 3,
+          name: "Prva Liga",
+          rating: 4.8,
+          address: "Savska 5, Zagreb",
+          status: "Available",
+          img: "https://picsum.photos/420/200?random=203",
+        },
+      ],
+      halls: [
+        {
+          id: 1,
+          name: "Globus",
+          rating: 4.9,
+          address: "Ilica 12, Zagreb",
+          status: "Available",
+          img: "https://picsum.photos/420/200?random=301",
+        },
+        {
+          id: 2,
+          name: "River",
+          rating: 4.8,
+          address: "Savska 5, Zagreb",
+          status: "Booked",
+          img: "https://picsum.photos/420/200?random=302",
+        },
+      ],
+      cakes: [
+        {
+          id: 1,
+          name: "Jolie Pettite",
+          img: "https://example.com/cake.jpg",
+          rating: "4.9",
+          address: "Magazinska 12, Zagreb",
+          status: "Open now",
+        },
+        {
+          id: 2,
+          name: "Vincek",
+          img: "https://example.com/cake.jpg",
+          rating: "4.9",
+          address: "Magazinska 12, Zagreb",
+          status: "Open now",
+        },
+      ],
+      band: [
+        {
+          id: 1,
+          name: "Joy",
+          rating: 4.9,
+          address: "Trg bana J. Jelačića 1, Zagreb",
+          status: "Available",
+          img: "https://picsum.photos/420/200?random=201",
+        },
+        {
+          id: 2,
+          name: "Tragovi",
+          rating: 4.7,
+          address: "Ilica 10, Zagreb",
+          status: "Booked",
+          img: "https://picsum.photos/420/200?random=202",
+        },
+        {
+          id: 3,
+          name: "Prva Liga",
+          rating: 4.8,
+          address: "Savska 5, Zagreb",
+          status: "Available",
+          img: "https://picsum.photos/420/200?random=203",
+        },
+      ],
     };
   },
   computed: {
@@ -714,6 +1014,59 @@ export default {
     },
     showBestMan() {
       return this.category === "groom" && this.sub === "Best Man";
+    },
+    showLapel() {
+      return this.category === "flowers" && this.sub === "Lapel";
+    },
+    showBouquet() {
+      return this.category === "flowers" && this.sub === "Bouquet";
+    },
+    showCarFlowers() {
+      return this.category === "flowers" && this.sub === "Car flowers";
+    },
+    showHallFlowers() {
+      return this.category === "flowers" && this.sub === "Hall flowers";
+    },
+    showChurchFlowers() {
+      return this.category === "flowers" && this.sub === "Church flowers";
+    },
+    showDateAndTime() {
+      return this.category === "church" && this.sub === "Date & Time";
+    },
+    showEngagement() {
+      return this.category === "church" && this.sub === "Engagement course";
+    },
+    showMusic() {
+      return this.category === "church" && this.sub === "Music";
+    },
+    showReaders() {
+      return this.category === "church" && this.sub === "Readers";
+    },
+    showDocuments() {
+      return this.category === "church" && this.sub === "Documents";
+    },
+    showConfetti() {
+      return this.category === "church" && this.sub === "Confetti";
+    },
+
+    showHalls() {
+      return this.category === "hall" && this.sub === "Hall";
+    },
+
+    showMenu() {
+      return this.category === "hall" && this.sub === "Menu";
+    },
+
+    showCakes() {
+      return this.category === "hall" && this.sub === "Cake";
+    },
+
+    showBands() {
+      return this.category === "hall" && this.sub === "Band";
+    },
+
+    showDance() {
+      return this.category === "hall" && this.sub === "First dance";
     },
 
     filteredSalons() {
@@ -779,6 +1132,48 @@ export default {
     filteredBarbers() {
       if (!this.search) return this.barbers;
       return this.barbers.filter((b) =>
+        b.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredCarFlowers() {
+      if (!this.search) return this.carFlowers;
+      return this.carFlowers.filter((b) =>
+        b.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredHallFlowers() {
+      if (!this.search) return this.hallFlowers;
+      return this.hallFlowers.filter((h) =>
+        h.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredChurchFlowers() {
+      if (!this.search) return this.churchFlowers;
+      return this.churchFlowers.filter((c) =>
+        c.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredMusic() {
+      if (!this.search) return this.music;
+      return this.music.filter((b) =>
+        b.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredHalls() {
+      if (!this.search) return this.halls;
+      return this.halls.filter((h) =>
+        h.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredCakes() {
+      if (!this.search) return this.cakes;
+      return this.cakes.filter((c) =>
+        c.name.toLowerCase().includes(this.search.toLowerCase())
+      );
+    },
+    filteredBands() {
+      if (!this.search) return this.band;
+      return this.band.filter((b) =>
         b.name.toLowerCase().includes(this.search.toLowerCase())
       );
     },

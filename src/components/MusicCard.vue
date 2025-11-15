@@ -1,0 +1,50 @@
+<template>
+  <div class="music-card mb-3 rounded-4 overflow-hidden">
+    <div class="row g-0">
+      <div class="col-12 col-md-4">
+        <img :src="music.img" class="w-100 h-100 music-img" alt="music" />
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="p-3 h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="music-title">{{ music.name }}</h5>
+            <div class="mb-1">
+              <span class="text-warning">★ ★ ★ ★ ★</span>
+              <small class="text-muted ms-2">{{ music.rating }}</small>
+            </div>
+            <p class="mb-1">📍 {{ music.address }}</p>
+            <p class="mb-2">⏱️ {{ music.status }}</p>
+          </div>
+          <div>
+            <button class="btn btn-dark rounded-pill px-4 py-1">
+              View music
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "MusicCard",
+  props: {
+    music: { type: Object, required: true },
+  },
+};
+</script>
+
+<style scoped>
+.music-card {
+  background: #fff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+.music-img {
+  object-fit: cover;
+  min-height: 150px;
+}
+.music-title {
+  font-family: Georgia, serif;
+}
+</style>
