@@ -2,8 +2,15 @@
   <router-view />
 </template>
 
+<script>
+export default {
+  name: "App",
+};
+</script>
+
 <style lang="scss">
 #app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
   font-family: "Playfair Display", serif;
   font-optical-sizing: auto;
   font-style: normal;
@@ -21,14 +28,5 @@ body {
 
 nav {
   padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

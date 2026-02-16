@@ -55,9 +55,9 @@
 
 <script>
 import { ref, computed } from "vue";
-import LeftMenu from "@/components/LeftMenu.vue";
-import SubMenu from "@/components/SubMenu.vue";
-import ContentPanel from "@/components/ContentPanel.vue";
+import LeftMenu from "../components/LeftMenu.vue";
+import SubMenu from "../components/SubMenu.vue";
+import ContentPanel from "../components/ContentPanel.vue";
 
 export default {
   name: "WelcomeView",
@@ -89,7 +89,7 @@ export default {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
-      })
+      }),
     );
 
     const daysLeft = computed(() => {
@@ -122,7 +122,7 @@ export default {
 
     const handleOpenChat = ({ type, subjectId, title }) => {
       let chat = chats.value.find(
-        (c) => c.type === type && c.subjectId === subjectId
+        (c) => c.type === type && c.subjectId === subjectId,
       );
 
       if (!chat) {

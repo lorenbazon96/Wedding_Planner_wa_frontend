@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "@/views/HomeView.vue";
-import WelcomeView from "@/views/WelcomeView.vue";
-import RegisterView from "@/views/RegisterView.vue";
-import LoginView from "@/views/LoginView.vue";
-import EditView from "@/views/EditView.vue";
+import HomeView from "../views/HomeView.vue";
+import LoginView from "../views/LoginView.vue";
+import RegisterView from "../views/RegisterView.vue";
+import WelcomeView from "../views/WelcomeView.vue";
+import EditView from "../views/EditView.vue";
 
 const routes = [
   {
@@ -43,7 +43,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
+
   routes,
 });
 

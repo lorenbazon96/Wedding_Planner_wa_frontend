@@ -41,20 +41,25 @@
 </template>
 
 <script>
+import { login } from "../services/authService.js";
+
 export default {
   name: "LoginView",
   data() {
-    return {
-      email: "",
-      password: "",
-    };
+    return { email: "", password: "" };
   },
   methods: {
-    submitForm() {
-      console.log("Email:", this.email);
-      console.log("Password:", this.password);
-      alert("Form submitted!");
-      this.$router.push("/welcome");
+    async submitForm() {
+      try {
+        const user = await login({
+          email: this.email,
+          password: this.password,
+        });
+        alert(`Welcome back, ${user.username}`);
+        this.$router.push("/welcome");
+      } catch (err) {
+        alert(err.response?.data?.message || "Login failed");
+      }
     },
   },
 };

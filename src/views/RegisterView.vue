@@ -41,9 +41,7 @@
           class="form-input mb-3"
         />
 
-        <router-link to="/welcome" class="btn-gold mt-3 text-center"
-          >Submit</router-link
-        >
+        <button @click="submitForm" class="btn-gold mt-3">Submit</button>
       </div>
 
       <div
@@ -56,6 +54,8 @@
 </template>
 
 <script>
+import { register } from "../services/authService.js";
+
 export default {
   name: "RegisterView",
   data() {
@@ -68,13 +68,22 @@ export default {
     };
   },
   methods: {
-    submitForm() {
-      console.log("Bride:", this.Bride_name);
-      console.log("Groom:", this.Groom_name);
-      console.log("Date:", this.Date_wedding);
-      console.log("Email:", this.email);
-      console.log("Password:", this.password);
-      alert("Form submitted!");
+    async submitForm() {
+      try {
+        const userData = {
+          username: `${this.Bride_name} & ${this.Groom_name}`,
+          email: this.email,
+          password: this.password,
+          brideName: this.Bride_name,
+          groomName: this.Groom_name,
+          dateWedding: this.Date_wedding,
+        };
+        const user = await register(userData);
+        alert(`User created: ${user.username}`);
+        this.$router.push("/welcome");
+      } catch (err) {
+        alert(err.response?.data?.message || "Registration failed");
+      }
     },
   },
 };
