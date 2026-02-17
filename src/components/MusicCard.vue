@@ -2,7 +2,7 @@
   <div class="music-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="music.img" class="w-100 h-100 music-img" alt="music" />
+        <img :src="music.gallery && music.gallery.length ? music.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 music-img" alt="music" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ music.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ music.address }}</p>
-            <p class="mb-2">⏱️ {{ music.status }}</p>
+            <p class="mb-1">📞 {{ music.phone }}</p>
+            <p class="mb-2">📧 {{ music.email }}</p>
           </div>
           <div>
             <button

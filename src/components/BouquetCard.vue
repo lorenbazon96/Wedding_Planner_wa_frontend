@@ -3,7 +3,7 @@
     <div class="row g-0">
       <div class="col-12 col-md-4">
         <img
-          :src="flower.img"
+          :src="flower.gallery && flower.gallery.length ? flower.gallery[0] : 'https://via.placeholder.com/420x200'"
           class="w-100 h-100 bouquet-img"
           alt="flower shop"
         />
@@ -17,7 +17,8 @@
               <small class="text-muted ms-2">{{ flower.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ flower.address }}</p>
-            <p class="mb-2">⏱️ {{ flower.status }}</p>
+            <p class="mb-1">📞 {{ flower.phone }}</p>
+            <p class="mb-2">📧 {{ flower.email }}</p>
           </div>
           <div>
             <button

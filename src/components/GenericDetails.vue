@@ -4,7 +4,7 @@
   >
     <div class="d-flex justify-content-between align-items-start mb-3">
       <div class="d-flex flex-column flex-md-row gap-3">
-        <img :src="item.img" :alt="item.name" class="rounded-3 item-main-img" />
+        <img :src="item.gallery && item.gallery.length ? item.gallery[0] : 'https://via.placeholder.com/260x190'" :alt="item.name" class="rounded-3 item-main-img" />
 
         <div>
           <h3 class="fw-bold mb-1">{{ item.name }}</h3>
@@ -16,13 +16,17 @@
 
           <div class="small">
             <div class="mb-1">📍 {{ item.address }}</div>
-            <div>🕒 Mon: 10-13 & 16-19</div>
-            <div>Tue: 10-13 & 16-19</div>
-            <div>Wed: 10-13 & 16-19</div>
-            <div>Thu: 10-13 & 16-19</div>
-            <div>Fri: 10-13 & 16-19</div>
-            <div>Sat: 9-13</div>
-            <div>Sun: closed</div>
+            <div class="mb-1">📞 {{ item.phone }}</div>
+            <div class="mb-1">📧 {{ item.email }}</div>
+            <div v-if="item.workingHours">
+              <div>🕒 Mon: {{ item.workingHours.mon }}</div>
+              <div>Tue: {{ item.workingHours.tue }}</div>
+              <div>Wed: {{ item.workingHours.wed }}</div>
+              <div>Thu: {{ item.workingHours.thu }}</div>
+              <div>Fri: {{ item.workingHours.fri }}</div>
+              <div>Sat: {{ item.workingHours.sat }}</div>
+              <div>Sun: {{ item.workingHours.sun }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,16 +68,23 @@
 
     <div class="flex-grow-1 overflow-auto">
       <div v-if="activeTab === 'gallery'" class="row g-3">
-        <div v-for="(img, i) in galleryImages" :key="i" class="col-12 col-md-6">
-          <img :src="img" alt="" class="w-100 rounded-4 gallery-img" />
-        </div>
+        <template v-if="item.gallery && item.gallery.length">
+          <div v-for="(img, i) in item.gallery" :key="i" class="col-12 col-md-6">
+            <img :src="img" alt="" class="w-100 rounded-4 gallery-img" />
+          </div>
+        </template>
+        <p v-else class="text-muted">No images available.</p>
       </div>
 
       <div v-else-if="activeTab === 'contact'">
-        <p class="mb-2">Contact information, phone, email, links…</p>
-        <p class="mb-0">Phone: +385 91 000 000</p>
-        <p class="mb-0">
-          Email: info@{{ item.name.toLowerCase().replace(/\s/g, "") }}.hr
+        <p class="mb-0">📞 {{ item.phone }}</p>
+        <p class="mb-0">📧 {{ item.email }}</p>
+        <p class="mb-0">📍 {{ item.address }}</p>
+        <p v-if="item.website" class="mb-0">
+          🌐 <a :href="item.website" target="_blank">{{ item.website }}</a>
+        </p>
+        <p v-if="item.instagram" class="mb-0">
+          📷 <a :href="item.instagram" target="_blank">{{ item.instagram }}</a>
         </p>
       </div>
 
@@ -139,12 +150,15 @@
         >
           💾 Save
         </button>
+        <span v-if="saved" class="ms-2 text-success fw-bold">✅ Saved!</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import api from "../api.js";
+
 export default {
   name: "GenericDetails",
   props: {
@@ -161,6 +175,7 @@ export default {
   data() {
     return {
       activeTab: "gallery",
+      saved: false,
       form: {
         isPick: "",
         appointmentDate: "",
@@ -170,13 +185,30 @@ export default {
       },
     };
   },
-  computed: {
-    galleryImages() {
-      return [this.item.img, this.item.img, this.item.img, this.item.img];
-    },
+  async mounted() {
+    try {
+      const res = await api.get("/selections/" + this.item.id);
+      if (res.data && (res.data.isPick || res.data.appointmentDate || res.data.customField || res.data.notes || res.data.price)) {
+        this.form.isPick = res.data.isPick || "";
+        this.form.appointmentDate = res.data.appointmentDate
+          ? new Date(res.data.appointmentDate).toISOString().slice(0, 10)
+          : "";
+        this.form.customField = res.data.customField || "";
+        this.form.notes = res.data.notes || "";
+        this.form.price = res.data.price ?? null;
+      }
+    } catch (e) {
+      // no existing selection
+    }
   },
   methods: {
-    saveSelection() {
+    async saveSelection() {
+      await api.post("/selections", {
+        vendor: this.item.id,
+        ...this.form,
+      });
+      this.saved = true;
+      setTimeout(() => { this.saved = false; }, 2000);
       this.$emit("save", {
         itemId: this.item.id,
         ...this.form,

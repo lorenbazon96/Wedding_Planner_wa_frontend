@@ -2,7 +2,11 @@
   <div class="salon-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="salon.img" class="w-100 h-100 salon-img" alt="salon" />
+        <img
+          :src="salon.gallery && salon.gallery.length ? salon.gallery[0] : 'https://via.placeholder.com/420x200'"
+          class="w-100 h-100 salon-img"
+          alt="salon"
+        />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +17,8 @@
               <small class="text-muted ms-2">{{ salon.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ salon.address }}</p>
-            <p class="mb-2">⏱️ {{ salon.status }}</p>
+            <p class="mb-1">📞 {{ salon.phone }}</p>
+            <p class="mb-2">📧 {{ salon.email }}</p>
           </div>
           <div>
             <button

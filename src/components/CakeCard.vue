@@ -2,7 +2,7 @@
   <div class="cake-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="cake.img" class="w-100 h-100 cake-img" alt="wedding cake" />
+        <img :src="cake.gallery && cake.gallery.length ? cake.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 cake-img" alt="wedding cake" />
       </div>
 
       <div class="col-12 col-md-8">
@@ -16,7 +16,8 @@
             </div>
 
             <p class="mb-1">📍 {{ cake.address }}</p>
-            <p class="mb-2">⏱️ {{ cake.status }}</p>
+            <p class="mb-1">📞 {{ cake.phone }}</p>
+            <p class="mb-2">📧 {{ cake.email }}</p>
           </div>
 
           <div>

@@ -2,7 +2,7 @@
   <div class="store-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="store.img" class="w-100 h-100 store-img" alt="store" />
+        <img :src="store.gallery && store.gallery.length ? store.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 store-img" alt="store" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ store.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ store.address }}</p>
-            <p class="mb-2">⏱️ {{ store.status }}</p>
+            <p class="mb-1">📞 {{ store.phone }}</p>
+            <p class="mb-2">📧 {{ store.email }}</p>
           </div>
           <div>
             <button

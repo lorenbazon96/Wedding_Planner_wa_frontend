@@ -2,7 +2,7 @@
   <div class="store-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="storeg.img" class="w-100 h-100 store-img" alt="store" />
+        <img :src="storeg.gallery && storeg.gallery.length ? storeg.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 store-img" alt="store" />
       </div>
 
       <div class="col-12 col-md-8">
@@ -16,7 +16,8 @@
             </div>
 
             <p class="mb-1">📍 {{ storeg.address }}</p>
-            <p class="mb-2">⏱️ {{ storeg.status }}</p>
+            <p class="mb-1">📞 {{ storeg.phone }}</p>
+            <p class="mb-2">📧 {{ storeg.email }}</p>
           </div>
 
           <div>

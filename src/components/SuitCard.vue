@@ -2,7 +2,7 @@
   <div class="suit-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="suit.img" class="w-100 h-100 suit-img" alt="suit" />
+        <img :src="suit.gallery && suit.gallery.length ? suit.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 suit-img" alt="suit" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ suit.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ suit.address }}</p>
-            <p class="mb-2">⏱️ {{ suit.status }}</p>
+            <p class="mb-1">📞 {{ suit.phone }}</p>
+            <p class="mb-2">📧 {{ suit.email }}</p>
           </div>
           <div>
             <button

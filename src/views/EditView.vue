@@ -6,23 +6,37 @@
       <img src="@/assets/logo.png" alt="Wedding Planner" class="top-logo" />
 
       <router-link to="/welcome" class="wedding-info-link text-decoration-none">
-        <div class="wedding-info text-start">
-          <h3 class="mb-0 fancy-name">Ivan &amp; Ivana</h3>
-          <small class="date-text fancy-name">15.11.2026.</small>
+        <div class="d-flex align-items-center gap-3">
+          <img
+            v-if="imagePreview"
+            :src="imagePreview"
+            alt="Wedding cover"
+            class="header-cover"
+          />
+          <div class="text-start">
+            <h3 class="mb-0 fancy-name">
+              {{ brideName }} &amp; {{ groomName }}
+            </h3>
+            <small class="date-text fancy-name">{{ date }}</small>
+          </div>
         </div>
       </router-link>
     </div>
 
-    <div v-if="imagePreview" class="mt-4">
-      <img :src="imagePreview" alt="Wedding cover" class="cover-preview" />
-    </div>
-
     <div class="edit-form mt-5 d-flex flex-column align-items-center">
-      <label class="label-gold mb-2">Names</label>
+      <label class="label-gold mb-2">Bride Name</label>
       <input
         type="text"
-        v-model="names"
-        placeholder="Ivan & Ivana"
+        v-model="brideName"
+        placeholder="Ivana"
+        class="form-input mb-3"
+      />
+
+      <label class="label-gold mb-2">Groom Name</label>
+      <input
+        type="text"
+        v-model="groomName"
+        placeholder="Ivan"
         class="form-input mb-3"
       />
 
@@ -45,25 +59,43 @@
 </template>
 
 <script>
+import { getProfile, updateProfile } from "@/services/authService.js";
+
 export default {
   name: "EditView",
   data() {
     return {
-      names: "Ivan & Ivana",
-      date: "2026-11-15",
+      brideName: "",
+      groomName: "",
+      date: "",
       imageFile: null,
       imagePreview: null,
     };
   },
+  async mounted() {
+    const profile = await getProfile();
+    this.brideName = profile.brideName || "";
+    this.groomName = profile.groomName || "";
+    if (profile.dateWedding) {
+      this.date = new Date(profile.dateWedding).toISOString().slice(0, 10);
+    }
+    if (profile.coverImage) {
+      this.imagePreview = profile.coverImage;
+    }
+  },
   methods: {
-    saveChanges() {
-      localStorage.setItem("wedding_names", this.names);
-      localStorage.setItem("wedding_date", this.date);
+    async saveChanges() {
+      const data = {
+        brideName: this.brideName,
+        groomName: this.groomName,
+        dateWedding: this.date,
+      };
 
       if (this.imagePreview) {
-        localStorage.setItem("wedding_image", this.imagePreview);
+        data.coverImage = this.imagePreview;
       }
 
+      await updateProfile(data);
       this.$router.push("/welcome");
     },
     goBack() {
@@ -81,16 +113,6 @@ export default {
       };
       reader.readAsDataURL(file);
     },
-  },
-  saveChanges() {
-    localStorage.setItem("wedding_names", this.names);
-    localStorage.setItem("wedding_date", this.date);
-
-    if (this.imagePreview) {
-      localStorage.setItem("wedding_image", this.imagePreview);
-    }
-
-    this.$router.push("/welcome");
   },
 };
 </script>
@@ -124,7 +146,7 @@ export default {
 }
 
 .fancy-name {
-  font-family: "Italianno", cursive;
+  font-family: inherit;
   font-size: 3rem;
   line-height: 1;
   color: #08182e;
@@ -176,11 +198,13 @@ export default {
   font-size: 30px;
 }
 
-.cover-preview {
-  max-width: 260px;
-  max-height: 260px;
-  border-radius: 20px;
+.header-cover {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
   object-fit: cover;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  border: 2px solid #08182e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: none;
 }
 </style>

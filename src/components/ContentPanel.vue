@@ -726,6 +726,7 @@ import trash from "@/assets/trash.png";
 
 import SalonDetails from "./SalonDetails.vue";
 import GenericDetails from "./GenericDetails.vue";
+import api from "../api.js";
 
 export default {
   name: "ContentPanel",
@@ -893,517 +894,27 @@ export default {
         { label: "First dance", icon: dance, planned: 100, spent: 0 },
       ],
 
-      salons: [
-        {
-          id: 1,
-          name: "Angels-Wedding",
-          rating: 4.9,
-          address: "Zagrebačka ul. 1, Pula",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=30",
-        },
-        {
-          id: 2,
-          name: "Vjenčanice Biba Rijeka",
-          rating: 4.9,
-          address: "Ul. Strossmayerova 2b, Rijeka",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=31",
-        },
-        {
-          id: 3,
-          name: "Glamour Bridal",
-          rating: 4.7,
-          address: "Ilica 15, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=32",
-        },
-      ],
-      stores: [
-        {
-          id: 1,
-          name: "Zlatarna Dodić",
-          rating: 4.9,
-          address: "Ilica 46, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=40",
-        },
-        {
-          id: 2,
-          name: "Zlatarna Celje",
-          rating: 4.9,
-          address: "Praška ulica 8, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=41",
-        },
-        {
-          id: 3,
-          name: "Prahir",
-          rating: 4.7,
-          address: "Ul. Vice Vukova 6, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=42",
-        },
-      ],
-      shops: [
-        {
-          id: 1,
-          name: "Aldo",
-          rating: 4.9,
-          address: "Varšavska 46, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=50",
-        },
-        {
-          id: 2,
-          name: "Mass",
-          rating: 4.9,
-          address: "Ilica 8, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=51",
-        },
-        {
-          id: 3,
-          name: "Zooek",
-          rating: 4.7,
-          address: "Vukovarska ul. 6, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=52",
-        },
-      ],
-      hairSalon: [
-        {
-          id: 1,
-          name: "Sasha",
-          rating: 4.9,
-          address: "Dalmatinska 4, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=60",
-        },
-        {
-          id: 2,
-          name: "Vikler i Ruž",
-          rating: 4.9,
-          address: "Frankopanska 12",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=61",
-        },
-        {
-          id: 3,
-          name: "Hairque",
-          rating: 4.7,
-          address: "Vukovarska ul. 6, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=62",
-        },
-      ],
-      cozmeticSalon: [
-        {
-          id: 1,
-          name: "Estrella Beauty & academy",
-          rating: 4.9,
-          address: "Cetingradska 26, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=60",
-        },
-        {
-          id: 2,
-          name: "Vikler i Ruž",
-          rating: 4.9,
-          address: "Frankopanska 12",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=61",
-        },
-        {
-          id: 3,
-          name: "De luxe",
-          rating: 4.7,
-          address: "Ilica 35, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=62",
-        },
-      ],
-      ties: [
-        {
-          id: 1,
-          name: "Croata",
-          rating: 4.9,
-          address: "Oktogon, Ilica 6, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=60",
-        },
-        {
-          id: 2,
-          name: "Galileo",
-          rating: 4.9,
-          address: "Medvedgradska 12",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=61",
-        },
-      ],
-      shopsg: [
-        {
-          id: 1,
-          name: "Aldo",
-          rating: 4.9,
-          address: "Varšavska 46, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=50",
-        },
-        {
-          id: 2,
-          name: "Mass",
-          rating: 4.9,
-          address: "Ilica 8, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=51",
-        },
-        {
-          id: 3,
-          name: "Modivo",
-          rating: 4.7,
-          address: "Vukovarska ul. 6, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=52",
-        },
-      ],
-      shirts: [
-        {
-          id: 1,
-          name: "Classic White Shirt",
-          rating: 4.9,
-          address: "Varšavska 10, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=70",
-        },
-        {
-          id: 2,
-          name: "Slim Fit Blue Shirt",
-          rating: 4.7,
-          address: "Ilica 25, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=71",
-        },
-      ],
-      suits: [
-        {
-          id: 1,
-          name: "Jeordie's",
-          rating: 4.9,
-          address: "Ilica 12, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=100",
-        },
-        {
-          id: 2,
-          name: "Martin Arbanas",
-          rating: 4.7,
-          address: "Savska 5, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=101",
-        },
-        {
-          id: 3,
-          name: "Suitbox",
-          rating: 4.7,
-          address: "Savska 5, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=1021",
-        },
-      ],
-      hairSalonG: [
-        {
-          id: 1,
-          name: "Gentlemen's Cut",
-          rating: 4.8,
-          address: "Ilica 10, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=730",
-        },
-        {
-          id: 2,
-          name: "Barber King",
-          rating: 4.9,
-          address: "Vukovarska 15, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=741",
-        },
-      ],
-      barbers: [
-        {
-          id: 1,
-          name: "Barber Shop One",
-          rating: 4.8,
-          address: "Trg bana J. Jelačića 5, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=70",
-        },
-        {
-          id: 2,
-          name: "Classic Barber",
-          rating: 4.7,
-          address: "Ilica 20, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=71",
-        },
-        {
-          id: 3,
-          name: "The Royal Barber Shop",
-          rating: 4.7,
-          address: "Froudeova ulica 9., Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=731",
-        },
-        {
-          id: 4,
-          name: "Brijačko - frizerski salon Man style",
-          rating: 4.7,
-          address: "Nova Cesta 171, Zagreb",
-          status: "open",
-          img: "https://picsum.photos/420/200?random=571",
-        },
-      ],
-      flowers: [
-        {
-          id: 1,
-          name: "Cvjećarnica Ljubica",
-          img: "https://picsum.photos/420/200?random=510",
-          rating: 4.9,
-          address: "Meštrovićev trg 2",
-          status: "Open until 20:00",
-        },
-        {
-          id: 2,
-          name: "Cvjećarnica Orhideja",
-          img: "https://picsum.photos/420/200?random=509",
-          rating: 4.8,
-          address: "Horvaćanska cesta 26",
-          status: "Closes soon",
-        },
-        {
-          id: 3,
-          name: "Cvjećarnica Ljiljana",
-          img: "https://picsum.photos/420/200?random=508",
-          rating: 4.8,
-          address: "Ilica 26",
-          status: "Closes soon",
-        },
-        {
-          id: 4,
-          name: "Cvjećarnica Ruža",
-          img: "https://picsum.photos/420/200?random=507",
-          rating: 4.8,
-          address: "Tkalčićeva 15, 10000 Zagreb",
-          status: "Closes soon",
-        },
-      ],
-      carFlowers: [
-        {
-          id: 1,
-          name: "Cvjećarnica Ljubica",
-          img: "https://picsum.photos/420/200?random=506",
-          rating: 4.9,
-          address: "Meštrovićev trg 2",
-          status: "Open until 20:00",
-        },
-        {
-          id: 2,
-          name: "Cvjećarnica Orhideja",
-          img: "https://picsum.photos/420/200?random=505",
-          rating: 4.8,
-          address: "Horvaćanska cesta 26",
-          status: "Closes soon",
-        },
-      ],
-      hallFlowers: [
-        {
-          id: 1,
-          name: "Cvjećarnica Ljubica",
-          img: "https://picsum.photos/420/200?random=504",
-          rating: 4.9,
-          address: "Meštrovićev trg 2",
-          status: "Open until 20:00",
-        },
-        {
-          id: 2,
-          name: "Cvjećarnica Orhideja",
-          img: "https://picsum.photos/420/200?random=503",
-          rating: 4.8,
-          address: "Horvaćanska cesta 26",
-          status: "Closes soon",
-        },
-      ],
-      churchFlowers: [
-        {
-          id: 1,
-          name: "Cvjećarnica Ljubica",
-          img: "https://picsum.photos/420/200?random=502",
-          rating: 4.9,
-          address: "Meštrovićev trg 2",
-          status: "Open until 20:00",
-        },
-        {
-          id: 2,
-          name: "Cvjećarnica Orhideja",
-          img: "https://picsum.photos/420/200?random=501",
-          rating: 4.8,
-          address: "Horvaćanska cesta 26",
-          status: "Closes soon",
-        },
-      ],
-      music: [
-        {
-          id: 1,
-          name: "Joy",
-          rating: 4.9,
-          address: "Trg bana J. Jelačića 1, Zagreb",
-          status: "Available",
-          img: "https://picsum.photos/420/200?random=201",
-        },
-        {
-          id: 2,
-          name: "Tragovi",
-          rating: 4.7,
-          address: "Ilica 10, Zagreb",
-          status: "Booked",
-          img: "https://picsum.photos/420/200?random=202",
-        },
-        {
-          id: 3,
-          name: "Prva Liga",
-          rating: 4.8,
-          address: "Savska 5, Zagreb",
-          status: "Available",
-          img: "https://picsum.photos/420/200?random=203",
-        },
-      ],
-      halls: [
-        {
-          id: 1,
-          name: "Globus",
-          rating: 4.9,
-          address: "Ilica 12, Zagreb",
-          status: "Available",
-          img: "https://picsum.photos/420/200?random=301",
-        },
-        {
-          id: 2,
-          name: "River",
-          rating: 4.8,
-          address: "Savska 5, Zagreb",
-          status: "Booked",
-          img: "https://picsum.photos/420/200?random=302",
-        },
-      ],
-      cakes: [
-        {
-          id: 1,
-          name: "Jolie Pettite",
-          img: "https://picsum.photos/420/200?random=221",
-          rating: "4.9",
-          address: "Magazinska 12, Zagreb",
-          status: "Open now",
-        },
-        {
-          id: 2,
-          name: "Vincek",
-          img: "https://picsum.photos/420/200?random=220",
-          rating: "4.9",
-          address: "Magazinska 12, Zagreb",
-          status: "Open now",
-        },
-      ],
-      band: [
-        {
-          id: 1,
-          name: "Joy",
-          rating: 4.9,
-          address: "Trg bana J. Jelačića 1, Zagreb",
-          status: "Available",
-          img: "https://picsum.photos/420/200?random=201",
-        },
-        {
-          id: 2,
-          name: "Tragovi",
-          rating: 4.7,
-          address: "Ilica 10, Zagreb",
-          status: "Booked",
-          img: "https://picsum.photos/420/200?random=202",
-        },
-        {
-          id: 3,
-          name: "Prva Liga",
-          rating: 4.8,
-          address: "Savska 5, Zagreb",
-          status: "Available",
-          img: "https://picsum.photos/420/200?random=203",
-        },
-      ],
+      salons: [],
+      stores: [],
+      shops: [],
+      hairSalon: [],
+      cozmeticSalon: [],
+      ties: [],
+      shopsg: [],
+      shirts: [],
+      suits: [],
+      hairSalonG: [],
+      barbers: [],
+      flowers: [],
+      carFlowers: [],
+      hallFlowers: [],
+      churchFlowers: [],
+      music: [],
+      halls: [],
+      cakes: [],
+      band: [],
       trash,
-      chatMessages: {
-        1: [
-          {
-            id: 1,
-            from: "them",
-            text: "Hej, imamo željenu haljinu, predivna je!",
-            time: "18:30",
-            type: "text",
-          },
-          {
-            id: 2,
-            from: "me",
-            text: "Jeee, baš mi je drago 😊",
-            time: "18:33",
-            type: "text",
-          },
-          {
-            id: 3,
-            from: "them",
-            text: "Odlično, možemo se čuti za termin",
-            time: "18:36",
-            type: "text",
-          },
-          {
-            id: 4,
-            from: "them",
-            text: "Ok, šaljem ti fotku haljine kasnije.",
-            time: "18:37",
-            type: "text",
-          },
-        ],
-        2: [
-          {
-            id: 1,
-            from: "me",
-            text: "Marko, potvrdi samo dolaziš li s partnericom.",
-            time: "17:01",
-            type: "text",
-          },
-          {
-            id: 2,
-            from: "them",
-            text: "Da, naravno!",
-            time: "18:30",
-            type: "text",
-          },
-          {
-            id: 1,
-            from: "me",
-            text: "Jesmo riješili prijevoz za kumove?",
-            time: "18:31",
-            type: "text",
-          },
-        ],
-        3: [
-          {
-            id: 1,
-            from: "them",
-            text: "Pozdrav, tada smo slobodni i možemo svirati.",
-            time: "Jučer",
-            type: "text",
-          },
-        ],
-      },
+      chatMessages: {},
 
       newChatMessage: "",
       newChatFiles: [],
@@ -1427,9 +938,13 @@ export default {
       return chat ? chat.title : "Chat";
     },
 
+    currentChat() {
+      if (!this.currentChatId) return null;
+      return this.chats.find((c) => c.id === this.currentChatId) || null;
+    },
     currentChatMessages() {
-      if (!this.currentChatId) return [];
-      return this.chatMessages[this.currentChatId] || [];
+      if (!this.currentChat) return [];
+      return this.chatMessages[this.currentChat.subjectId] || [];
     },
     showGuests() {
       return this.category === "guests";
@@ -1785,12 +1300,54 @@ export default {
       return this.notesData.find((n) => n.id === id) || this.notesData[0];
     },
   },
+  async mounted() {
+    const categoryMap = {
+      salon: "salons",
+      rings: "stores",
+      shoes: "shops",
+      hairdresser: "hairSalon",
+      cozmetic: "cozmeticSalon",
+      tie: "ties",
+      shoesG: "shopsg",
+      shirt: "shirts",
+      suit: "suits",
+      hairdresserG: "hairSalonG",
+      barber: "barbers",
+      bouquet: "flowers",
+      carFlowers: "carFlowers",
+      hallFlowers: "hallFlowers",
+      churchFlowers: "churchFlowers",
+      music: "music",
+      hall: "halls",
+      cake: "cakes",
+      band: "band",
+    };
+
+    try {
+      const res = await api.get("/vendors");
+      const all = res.data.map((v) => ({ ...v, id: v._id }));
+
+      for (const [cat, prop] of Object.entries(categoryMap)) {
+        this[prop] = all.filter((v) => v.category === cat);
+      }
+    } catch (err) {
+      console.error("Failed to load vendors:", err);
+    }
+  },
   watch: {
     category() {
       this.selectedItem = null;
     },
     sub() {
       this.selectedItem = null;
+    },
+    currentChat: {
+      immediate: true,
+      handler(chat) {
+        if (chat && chat.subjectId) {
+          this.loadChatMessages(chat.subjectId);
+        }
+      },
     },
   },
   methods: {
@@ -1820,44 +1377,73 @@ export default {
         title: data.name,
       });
     },
-    sendChatMessage() {
+    async loadChatMessages(vendorId) {
+      if (!vendorId || this.chatMessages[vendorId]) return;
+      try {
+        const res = await api.get("/chat?vendor=" + vendorId);
+        this.chatMessages[vendorId] = res.data.map((m) => ({
+          id: m._id,
+          from: m.from,
+          text: m.text,
+          time: new Date(m.createdAt).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }),
+          type: m.type,
+        }));
+      } catch (err) {
+        console.error("Failed to load chat:", err);
+      }
+    },
+    async sendChatMessage() {
       const text = this.newChatMessage.trim();
       if (!text && !this.newChatFiles.length) return;
 
-      const id = this.currentChatId;
-      if (!id) return;
+      const chat = this.currentChat;
+      if (!chat) return;
 
-      if (!this.chatMessages[id]) {
-        this.chatMessages[id] = [];
+      const vendorId = chat.subjectId;
+
+      if (!this.chatMessages[vendorId]) {
+        this.chatMessages[vendorId] = [];
       }
 
       if (text) {
-        const newId = this.chatMessages[id].length
-          ? Math.max(...this.chatMessages[id].map((m) => m.id)) + 1
-          : 1;
-
-        this.chatMessages[id].push({
-          id: newId,
-          from: "me",
-          text,
-          time: "Now",
-          type: "text",
-        });
+        try {
+          const res = await api.post("/chat", {
+            vendor: vendorId,
+            from: "me",
+            text,
+            type: "text",
+          });
+          this.chatMessages[vendorId].push({
+            id: res.data._id,
+            from: "me",
+            text,
+            time: new Date(res.data.createdAt).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }),
+            type: "text",
+          });
+        } catch (err) {
+          console.error("Failed to send message:", err);
+        }
       }
 
-      this.newChatFiles.forEach((file) => {
-        const newId = this.chatMessages[id].length
-          ? Math.max(...this.chatMessages[id].map((m) => m.id)) + 1
-          : 1;
-
-        this.chatMessages[id].push({
-          id: newId,
-          from: "me",
-          text: file.name,
-          time: "Now",
-          type: "file",
-        });
-      });
+      for (const file of this.newChatFiles) {
+        try {
+          const res = await api.post("/chat", {
+            vendor: vendorId,
+            from: "me",
+            text: file.name,
+            type: "file",
+          });
+          this.chatMessages[vendorId].push({
+            id: res.data._id,
+            from: "me",
+            text: file.name,
+            time: new Date(res.data.createdAt).toLocaleTimeString("hr-HR", { hour: "2-digit", minute: "2-digit" }),
+            type: "file",
+          });
+        } catch (err) {
+          console.error("Failed to send file:", err);
+        }
+      }
 
       this.newChatMessage = "";
       this.newChatFiles = [];

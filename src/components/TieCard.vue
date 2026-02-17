@@ -2,7 +2,7 @@
   <div class="salon-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="tie.img" class="w-100 h-100 salon-img" alt="tie" />
+        <img :src="tie.gallery && tie.gallery.length ? tie.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 salon-img" alt="tie" />
       </div>
 
       <div class="col-12 col-md-8">
@@ -16,7 +16,8 @@
             </div>
 
             <p class="mb-1">📍 {{ tie.address }}</p>
-            <p class="mb-2">⏱️ {{ tie.status }}</p>
+            <p class="mb-1">📞 {{ tie.phone }}</p>
+            <p class="mb-2">📧 {{ tie.email }}</p>
           </div>
 
           <div>

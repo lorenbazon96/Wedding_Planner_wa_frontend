@@ -2,7 +2,7 @@
   <div class="barber-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="barber.img" class="w-100 h-100 barber-img" alt="barber" />
+        <img :src="barber.gallery && barber.gallery.length ? barber.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 barber-img" alt="barber" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ barber.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ barber.address }}</p>
-            <p class="mb-2">⏱️ {{ barber.status }}</p>
+            <p class="mb-1">📞 {{ barber.phone }}</p>
+            <p class="mb-2">📧 {{ barber.email }}</p>
           </div>
           <div>
             <button

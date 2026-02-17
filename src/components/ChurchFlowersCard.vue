@@ -3,7 +3,7 @@
     <div class="row g-0">
       <div class="col-12 col-md-4">
         <img
-          :src="church.img"
+          :src="church.gallery && church.gallery.length ? church.gallery[0] : 'https://via.placeholder.com/420x200'"
           class="w-100 h-100 church-img"
           alt="church flower shop"
         />
@@ -17,7 +17,8 @@
               <small class="text-muted ms-2">{{ church.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ church.address }}</p>
-            <p class="mb-2">⏱️ {{ church.status }}</p>
+            <p class="mb-1">📞 {{ church.phone }}</p>
+            <p class="mb-2">📧 {{ church.email }}</p>
           </div>
           <div>
             <button

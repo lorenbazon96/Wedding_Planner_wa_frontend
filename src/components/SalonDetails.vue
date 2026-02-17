@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-start mb-3">
       <div class="d-flex flex-column flex-md-row gap-3">
         <img
-          :src="salon.img"
+          :src="salon.gallery && salon.gallery.length ? salon.gallery[0] : 'https://via.placeholder.com/260x190'"
           :alt="salon.name"
           class="rounded-3 salon-main-img"
         />
@@ -20,14 +20,18 @@
 
           <div class="small">
             <div class="mb-1">📍 {{ salon.address }}</div>
+            <div class="mb-1">📞 {{ salon.phone }}</div>
+            <div class="mb-2">📧 {{ salon.email }}</div>
 
-            <div>🕒 Mon: 10-13 & 16-19</div>
-            <div>Tue: 10-13 & 16-19</div>
-            <div>Wed: 10-13 & 16-19</div>
-            <div>Thu: 10-13 & 16-19</div>
-            <div>Fri: 10-13 & 16-19</div>
-            <div>Sat: 9-13</div>
-            <div>Sun: closed</div>
+            <div v-if="salon.workingHours">
+              <div>🕒 Mon: {{ salon.workingHours.mon || 'closed' }}</div>
+              <div>Tue: {{ salon.workingHours.tue || 'closed' }}</div>
+              <div>Wed: {{ salon.workingHours.wed || 'closed' }}</div>
+              <div>Thu: {{ salon.workingHours.thu || 'closed' }}</div>
+              <div>Fri: {{ salon.workingHours.fri || 'closed' }}</div>
+              <div>Sat: {{ salon.workingHours.sat || 'closed' }}</div>
+              <div>Sun: {{ salon.workingHours.sun || 'closed' }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -68,15 +72,19 @@
 
     <div class="flex-grow-1 overflow-auto">
       <div v-if="activeTab === 'gallery'" class="row g-3">
-        <div v-for="(img, i) in galleryImages" :key="i" class="col-12 col-md-6">
+        <div v-for="(img, i) in salon.gallery" :key="i" class="col-12 col-md-6">
           <img :src="img" alt="" class="w-100 rounded-4 gallery-img" />
+        </div>
+        <div v-if="!salon.gallery || !salon.gallery.length" class="text-muted text-center py-4">
+          No images in gallery
         </div>
       </div>
 
       <div v-else-if="activeTab === 'contact'">
-        <p class="mb-2">Contact information, phone, email, links…</p>
-        <p class="mb-0">Phone: +385 91 000 000</p>
-        <p class="mb-0">Email: info@angels-wedding.hr</p>
+        <p class="mb-2"><strong>Contact information</strong></p>
+        <p class="mb-0">📞 Phone: {{ salon.phone || 'N/A' }}</p>
+        <p class="mb-0">📧 Email: {{ salon.email || 'N/A' }}</p>
+        <p class="mb-0">📍 Address: {{ salon.address || 'N/A' }}</p>
       </div>
 
       <div v-else-if="activeTab === 'select'" class="mt-2">
@@ -141,12 +149,15 @@
         >
           💾 Save
         </button>
+        <span v-if="saved" class="ms-2 text-success fw-bold">✅ Saved!</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import api from "../api.js";
+
 export default {
   name: "SalonDetails",
   props: {
@@ -159,6 +170,7 @@ export default {
   data() {
     return {
       activeTab: "gallery",
+      saved: false,
       form: {
         isPick: "",
         trialDate: "",
@@ -168,20 +180,38 @@ export default {
       },
     };
   },
-  computed: {
-    galleryImages() {
-      return [this.salon.img, this.salon.img, this.salon.img, this.salon.img];
-    },
+  async mounted() {
+    try {
+      const res = await api.get("/selections/" + this.salon.id);
+      if (res.data && (res.data.isPick || res.data.appointmentDate || res.data.customField || res.data.notes || res.data.price)) {
+        this.form.isPick = res.data.isPick || "";
+        this.form.trialDate = res.data.appointmentDate
+          ? new Date(res.data.appointmentDate).toISOString().slice(0, 10)
+          : "";
+        this.form.dressCode = res.data.customField || "";
+        this.form.accessories = res.data.notes || "";
+        this.form.price = res.data.price ?? null;
+      }
+    } catch (e) {
+      // no existing selection
+    }
   },
   methods: {
-    saveSelection() {
+    async saveSelection() {
+      await api.post("/selections", {
+        vendor: this.salon.id,
+        isPick: this.form.isPick,
+        appointmentDate: this.form.trialDate,
+        customField: this.form.dressCode,
+        notes: this.form.accessories,
+        price: this.form.price,
+      });
+      this.saved = true;
+      setTimeout(() => { this.saved = false; }, 2000);
       this.$emit("save", {
         salonId: this.salon.id,
         ...this.form,
       });
-    },
-    goToChat() {
-      this.$emit("open-chat", this.salon);
     },
   },
 };

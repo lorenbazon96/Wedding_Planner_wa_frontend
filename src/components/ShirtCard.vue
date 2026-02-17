@@ -2,7 +2,7 @@
   <div class="shirt-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="shirt.img" class="w-100 h-100 shirt-img" alt="shirt" />
+        <img :src="shirt.gallery && shirt.gallery.length ? shirt.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 shirt-img" alt="shirt" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ shirt.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ shirt.address }}</p>
-            <p class="mb-2">⏱️ {{ shirt.status }}</p>
+            <p class="mb-1">📞 {{ shirt.phone }}</p>
+            <p class="mb-2">📧 {{ shirt.email }}</p>
           </div>
           <div>
             <button

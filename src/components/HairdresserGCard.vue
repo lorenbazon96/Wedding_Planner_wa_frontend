@@ -3,7 +3,7 @@
     <div class="row g-0">
       <div class="col-12 col-md-4">
         <img
-          :src="hairdresser.img"
+          :src="hairdresser.gallery && hairdresser.gallery.length ? hairdresser.gallery[0] : 'https://via.placeholder.com/420x200'"
           class="w-100 h-100 hairdresser-img"
           alt="hairdresser"
         />
@@ -17,7 +17,8 @@
               <small class="text-muted ms-2">{{ hairdresser.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ hairdresser.address }}</p>
-            <p class="mb-2">⏱️ {{ hairdresser.status }}</p>
+            <p class="mb-1">📞 {{ hairdresser.phone }}</p>
+            <p class="mb-2">📧 {{ hairdresser.email }}</p>
           </div>
           <div>
             <button

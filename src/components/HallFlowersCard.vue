@@ -3,7 +3,7 @@
     <div class="row g-0">
       <div class="col-12 col-md-4">
         <img
-          :src="hall.img"
+          :src="hall.gallery && hall.gallery.length ? hall.gallery[0] : 'https://via.placeholder.com/420x200'"
           class="w-100 h-100 hall-img"
           alt="hall flower shop"
         />
@@ -17,7 +17,8 @@
               <small class="text-muted ms-2">{{ hall.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ hall.address }}</p>
-            <p class="mb-2">⏱️ {{ hall.status }}</p>
+            <p class="mb-1">📞 {{ hall.phone }}</p>
+            <p class="mb-2">📧 {{ hall.email }}</p>
           </div>
           <div>
             <button

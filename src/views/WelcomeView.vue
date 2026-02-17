@@ -7,9 +7,19 @@
         <img src="@/assets/logo.png" alt="Wedding Planner" class="top-logo" />
 
         <router-link to="/edit" class="wedding-info-link text-decoration-none">
-          <div class="wedding-info">
-            <h3 class="mb-0 fancy-name">Ivan &amp; Ivana</h3>
-            <small>{{ weddingDateDisplay }}</small>
+          <div class="d-flex align-items-center gap-3">
+            <img
+              v-if="coverImage"
+              :src="coverImage"
+              alt="Wedding cover"
+              class="header-cover"
+            />
+            <div class="wedding-info">
+              <h3 class="mb-0 fancy-name">
+                {{ brideName }} &amp; {{ groomName }}
+              </h3>
+              <small>{{ weddingDateDisplay }}</small>
+            </div>
           </div>
         </router-link>
       </div>
@@ -54,16 +64,32 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import LeftMenu from "../components/LeftMenu.vue";
 import SubMenu from "../components/SubMenu.vue";
 import ContentPanel from "../components/ContentPanel.vue";
+import { getProfile } from "../services/authService.js";
 
 export default {
   name: "WelcomeView",
   components: { LeftMenu, SubMenu, ContentPanel },
   setup() {
     const weddingDate = ref(new Date("2026-11-15"));
+    const brideName = ref("...");
+    const groomName = ref("...");
+    const coverImage = ref(null);
+
+    onMounted(async () => {
+      const profile = await getProfile();
+      brideName.value = profile.brideName || "Bride";
+      groomName.value = profile.groomName || "Groom";
+      if (profile.dateWedding) {
+        weddingDate.value = new Date(profile.dateWedding);
+      }
+      if (profile.coverImage) {
+        coverImage.value = profile.coverImage;
+      }
+    });
 
     const currentCategory = ref("bride");
     const currentSub = ref("Wedding dress");
@@ -164,6 +190,9 @@ export default {
       weddingDate,
       weddingDateDisplay,
       daysLeftMessage,
+      brideName,
+      groomName,
+      coverImage,
       currentCategory,
       currentSub,
       chats,
@@ -209,7 +238,7 @@ export default {
 }
 
 .fancy-name {
-  font-family: "Italianno", cursive;
+  font-family: inherit;
   font-size: 3rem;
   line-height: 1;
   color: #2b2b2b;
@@ -217,6 +246,7 @@ export default {
 
 .wedding-info small {
   color: #333;
+  font-size: 1.4em;
 }
 
 .remaining-pill {
@@ -239,5 +269,14 @@ button.remaining-pill:focus {
 .logout-btn:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+
+.header-cover {
+  width: 90px;
+  height: 120px;
+  border-radius: 10%;
+  object-fit: cover;
+  border: 2px solid #d4af37;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 </style>

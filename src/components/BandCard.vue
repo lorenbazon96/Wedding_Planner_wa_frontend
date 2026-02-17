@@ -2,7 +2,7 @@
   <div class="band-card mb-3 rounded-4 overflow-hidden">
     <div class="row g-0">
       <div class="col-12 col-md-4">
-        <img :src="band.img" class="w-100 h-100 band-img" alt="band" />
+        <img :src="band.gallery && band.gallery.length ? band.gallery[0] : 'https://via.placeholder.com/420x200'" class="w-100 h-100 band-img" alt="band" />
       </div>
       <div class="col-12 col-md-8">
         <div class="p-3 h-100 d-flex flex-column justify-content-between">
@@ -13,7 +13,8 @@
               <small class="text-muted ms-2">{{ band.rating }}</small>
             </div>
             <p class="mb-1">📍 {{ band.address }}</p>
-            <p class="mb-2">⏱️ {{ band.status }}</p>
+            <p class="mb-1">📞 {{ band.phone }}</p>
+            <p class="mb-2">📧 {{ band.email }}</p>
           </div>
           <div>
             <button
