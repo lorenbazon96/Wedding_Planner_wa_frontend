@@ -16,11 +16,11 @@
         v-model="accepted"
         class="form-check-input custom-checkbox me-2"
         type="checkbox"
-        id="acceptedCheck"
+        id="acceptedCheckMaid"
       />
       <label
         class="form-check-label"
-        for="acceptedCheck"
+        for="acceptedCheckMaid"
         style="color: #08182e"
       >
         Accepted
@@ -57,23 +57,87 @@
     </table>
 
     <button class="btn btn-gold mt-2" @click="addTask">Add Task</button>
+    <button class="btn btn-gold mt-2 ms-2" @click="saveData">Save</button>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "MaidOfHonorCard",
+
   data() {
     return {
       name: "",
       accepted: false,
       tasks: [{ name: "", done: false }],
+      allMaids: [],
     };
   },
+
   methods: {
     addTask() {
       this.tasks.push({ name: "", done: false });
     },
+
+    async saveData() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("No token found, please login.");
+
+        const response = await axios.post(
+          "http://localhost:5000/maidofhonor",
+          {
+            name: this.name,
+            accepted: this.accepted,
+            tasks: this.tasks,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        alert("Saved successfully!");
+        this.fetchMaids();
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
+        alert("Error saving data");
+      }
+    },
+
+    async fetchMaids() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get("http://localhost:5000/maidofhonor", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.allMaids = response.data;
+
+        if (this.allMaids.length > 0) {
+          const last = this.allMaids[this.allMaids.length - 1];
+          this.name = last.name;
+          this.accepted = last.accepted;
+          this.tasks =
+            last.tasks && last.tasks.length
+              ? last.tasks
+              : [{ name: "", done: false }];
+        }
+      } catch (error) {
+        console.error("FETCH ERROR:", error.response?.data || error.message);
+      }
+    },
+  },
+
+  mounted() {
+    this.fetchMaids();
   },
 };
 </script>
@@ -95,7 +159,9 @@ export default {
   border: 1px solid #08182e;
   background: rgba(212, 175, 55, 0.3);
   color: #08182e;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .remaining-pill {

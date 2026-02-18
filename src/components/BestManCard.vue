@@ -57,23 +57,86 @@
     </table>
 
     <button class="btn btn-gold mt-2" @click="addTask">Add Task</button>
+    <button class="btn btn-gold mt-2 ms-2" @click="saveData">Save</button>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "BestManCard",
+
   data() {
     return {
       name: "",
       accepted: false,
       tasks: [{ name: "", done: false }],
+      allBestMen: [],
     };
   },
+
   methods: {
     addTask() {
       this.tasks.push({ name: "", done: false });
     },
+
+    async saveData() {
+      try {
+        const token = localStorage.getItem("token");
+
+        console.log("FRONTEND TOKEN:", token);
+
+        await axios.post(
+          "http://localhost:5000/bestman",
+          {
+            name: this.name,
+            accepted: this.accepted,
+            tasks: this.tasks,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        alert("Saved successfully!");
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
+        alert("Error saving data");
+      }
+    },
+
+    async fetchBestMen() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get("http://localhost:5000/bestman", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        this.allBestMen = response.data;
+
+        if (this.allBestMen.length > 0) {
+          const last = this.allBestMen[this.allBestMen.length - 1];
+          this.name = last.name;
+          this.accepted = last.accepted;
+          this.tasks = last.tasks.length
+            ? last.tasks
+            : [{ name: "", done: false }];
+        }
+      } catch (error) {
+        console.error("Fetch error:", error.response?.data || error.message);
+      }
+    },
+  },
+
+  mounted() {
+    this.fetchBestMen();
   },
 };
 </script>
@@ -95,7 +158,9 @@ export default {
   border: 1px solid #08182e;
   background: rgba(212, 175, 55, 0.3);
   color: #08182e;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 
 .remaining-pill {
