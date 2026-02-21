@@ -370,11 +370,13 @@
               type="text"
               class="form-control"
               placeholder="Note title..."
+              @input="saveNoteDebounced"
             />
             <select
               v-model="currentNote.priority"
               class="form-select"
               style="max-width: 150px"
+              @change="saveNoteDebounced"
             >
               <option value="high">High</option>
               <option value="medium">Medium</option>
@@ -386,6 +388,7 @@
                 class="form-check-input"
                 v-model="currentNote.done"
                 :id="'note-done-' + currentNote.id"
+                @change="saveNoteDebounced"
               />
               <label
                 class="form-check-label small"
@@ -400,6 +403,7 @@
             v-model="currentNote.text"
             class="form-control flex-grow-1"
             placeholder="Write your note here..."
+            @input="saveNoteDebounced"
           ></textarea>
 
           <div class="d-flex gap-3 align-items-center">
@@ -481,6 +485,7 @@
                   <select
                     v-model="guest.status"
                     class="form-select form-select-sm"
+                    @change="updateGuestDebounced(guest)"
                   >
                     <option value="invited">Invited</option>
                     <option value="confirmed">Confirmed</option>
@@ -494,6 +499,7 @@
                     min="1"
                     class="form-control form-control-sm text-center"
                     v-model.number="guest.seats"
+                    @input="updateGuestDebounced(guest)"
                   />
                 </td>
                 <td>
@@ -502,6 +508,7 @@
                     class="form-control form-control-sm"
                     v-model="guest.note"
                     placeholder="Note..."
+                    @input="updateGuestDebounced(guest)"
                   />
                 </td>
                 <td class="text-center">
@@ -580,10 +587,6 @@
         >
           <div>
             <h6 class="mb-0 fw-bold">{{ currentChatTitle }}</h6>
-          </div>
-
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-success rounded-pill">Online</span>
           </div>
         </div>
 
@@ -772,67 +775,18 @@ export default {
       type: Array,
       default: () => [],
     },
+    notes: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
       search: "",
       sortBy: "",
       selectedItem: null,
-      notesData: [
-        {
-          id: 1,
-          title: "Checklist for photographer",
-          priority: "high",
-          done: false,
-          text: "Ask about golden hour, backup, price.",
-          image: "",
-        },
-        {
-          id: 2,
-          title: "Questions for the hall",
-          priority: "medium",
-          done: false,
-          text: "How many people, cake, music until when...",
-          image: "",
-        },
-        {
-          id: 3,
-          title: "Guests to call",
-          priority: "low",
-          done: true,
-          text: "Marko, Ana, Luka...",
-          image: "",
-        },
-      ],
-      guests: [
-        {
-          id: 1,
-          name: "Marko Markić",
-          side: "bride",
-          group: "family",
-          status: "confirmed",
-          seats: 2,
-          note: "",
-        },
-        {
-          id: 2,
-          name: "Ana Aničić",
-          side: "groom",
-          group: "friends",
-          status: "invited",
-          seats: 1,
-          note: "",
-        },
-        {
-          id: 3,
-          name: "Luka Lukić",
-          side: "bride",
-          group: "colleagues",
-          status: "maybe",
-          seats: 1,
-          note: "",
-        },
-      ],
+      noteUpdateTimeout: null,
+      guests: [],
 
       newGuest: {
         name: "",
@@ -880,6 +834,7 @@ export default {
         { label: "First dance", icon: dance, planned: 0, spent: 0 },
       ],
       budgetSaveTimeout: null,
+      guestUpdateTimeouts: {},
 
       salons: [],
       stores: [],
@@ -914,7 +869,7 @@ export default {
     currentChatId() {
       if (!this.showChat) return null;
       return this.sub && this.sub.startsWith("chat-")
-        ? Number(this.sub.replace("chat-", ""))
+        ? this.sub.replace("chat-", "")
         : null;
     },
     currentChatTitle() {
@@ -1282,9 +1237,9 @@ export default {
 
       const id =
         this.sub && this.sub.startsWith("note-")
-          ? Number(this.sub.replace("note-", ""))
-          : this.notesData[0]?.id;
-      return this.notesData.find((n) => n.id === id) || this.notesData[0];
+          ? this.sub.replace("note-", "")
+          : this.notes[0]?.id;
+      return this.notes.find((n) => n.id === id) || this.notes[0] || {};
     },
   },
   async mounted() {
@@ -1340,6 +1295,17 @@ export default {
       this.emitBudgetTotals();
     } catch (err) {
       console.error("Failed to load budget:", err);
+    }
+
+    try {
+      const guestRes = await api.get("/guests");
+      this.guests = guestRes.data.map((g) => ({
+        ...g,
+        id: g._id,
+      }));
+      this.$emit("guests-updated", this.guests);
+    } catch (err) {
+      console.error("Failed to load guests:", err);
     }
   },
   watch: {
@@ -1486,22 +1452,27 @@ export default {
       const files = Array.from(event.target.files || []);
       this.newChatFiles = files;
     },
-    deleteGuest(id) {
-      this.guests = this.guests.filter((g) => g.id !== id);
+    async deleteGuest(id) {
+      try {
+        await api.delete(`/guests/${id}`);
+        this.guests = this.guests.filter((g) => g.id !== id);
+        this.$emit("guests-updated", this.guests);
+      } catch (err) {
+        console.error("Failed to delete guest:", err);
+      }
     },
-    addGuest() {
+    async addGuest() {
       if (!this.newGuest.name.trim()) {
         return;
       }
 
-      const id = this.guests.length
-        ? Math.max(...this.guests.map((g) => g.id)) + 1
-        : 1;
-
-      this.guests.push({
-        id,
-        ...this.newGuest,
-      });
+      try {
+        const res = await api.post("/guests", this.newGuest);
+        this.guests.push({ ...res.data, id: res.data._id });
+        this.$emit("guests-updated", this.guests);
+      } catch (err) {
+        console.error("Failed to add guest:", err);
+      }
 
       this.newGuest = {
         name: "",
@@ -1512,22 +1483,39 @@ export default {
         note: "",
       };
     },
-    onSelectNote(id) {
-      this.activeNoteId = id;
+    updateGuestDebounced(guest) {
+      this.$emit("guests-updated", this.guests);
+      clearTimeout(this.guestUpdateTimeouts[guest.id]);
+      this.guestUpdateTimeouts[guest.id] = setTimeout(async () => {
+        try {
+          await api.put(`/guests/${guest.id}`, {
+            status: guest.status,
+            seats: guest.seats,
+            note: guest.note,
+          });
+        } catch (err) {
+          console.error("Failed to update guest:", err);
+        }
+      }, 600);
     },
-    onAddNote() {
-      const newId = this.notes.length
-        ? Math.max(...this.notes.map((n) => n.id)) + 1
-        : 1;
-      this.notes.push({
-        id: newId,
-        title: "New note",
-        priority: "low",
-        done: false,
-        text: "",
-        image: "",
-      });
-      this.activeNoteId = newId;
+    saveNoteDebounced() {
+      const note = this.currentNote;
+      if (!note || !note.id) return;
+      this.$emit("notes-updated", [...this.notes]);
+      clearTimeout(this.noteUpdateTimeout);
+      this.noteUpdateTimeout = setTimeout(async () => {
+        try {
+          await api.put(`/notes/${note.id}`, {
+            title: note.title,
+            priority: note.priority,
+            done: note.done,
+            text: note.text,
+            image: note.image,
+          });
+        } catch (err) {
+          console.error("Failed to save note:", err);
+        }
+      }, 600);
     },
     getFieldLabel(type) {
       const labels = {

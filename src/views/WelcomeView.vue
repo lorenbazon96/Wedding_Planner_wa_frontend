@@ -47,8 +47,11 @@
             :chats="chats"
             :budget-planned="budgetPlanned"
             :budget-spent="budgetSpent"
+            :guests="guests"
+            :notes="notes"
             @select-sub="currentSub = $event"
             @delete-chat="handleDeleteChat"
+            @notes-updated="onNotesUpdated"
           />
         </div>
 
@@ -57,8 +60,11 @@
             :category="currentCategory"
             :sub="currentSub"
             :chats="chats"
+            :notes="notes"
             @open-chat="handleOpenChat"
             @budget-updated="onBudgetUpdated"
+            @guests-updated="onGuestsUpdated"
+            @notes-updated="onNotesUpdated"
           />
         </div>
       </div>
@@ -72,6 +78,7 @@ import LeftMenu from "../components/LeftMenu.vue";
 import SubMenu from "../components/SubMenu.vue";
 import ContentPanel from "../components/ContentPanel.vue";
 import { getProfile } from "../services/authService.js";
+import api from "../api.js";
 
 export default {
   name: "WelcomeView",
@@ -92,26 +99,38 @@ export default {
       if (profile.coverImage) {
         coverImage.value = profile.coverImage;
       }
+
+      try {
+        const res = await api.get("/chats");
+        chats.value = res.data.map((c) => ({
+          id: c._id,
+          type: c.type,
+          subjectId: c.subjectId,
+          title: c.title,
+        }));
+      } catch (err) {
+        console.error("Failed to load chats:", err);
+      }
+
+      try {
+        const res = await api.get("/notes");
+        notes.value = res.data.map((n) => ({
+          id: n._id,
+          title: n.title,
+          priority: n.priority,
+          done: n.done,
+          text: n.text,
+          image: n.image,
+        }));
+      } catch (err) {
+        console.error("Failed to load notes:", err);
+      }
     });
 
     const currentCategory = ref("bride");
     const currentSub = ref("Wedding dress");
 
-    const chats = ref([
-      {
-        id: 1,
-        type: "person",
-        subjectId: "maid-of-honor-1",
-        title: "Maid of Honor - Ana",
-      },
-      {
-        id: 2,
-        type: "person",
-        subjectId: "best-man-1",
-        title: "Best Man - Marko",
-      },
-      { id: 3, type: "band", subjectId: 1, title: "Bend Joy" },
-    ]);
+    const chats = ref([]);
 
     const weddingDateDisplay = computed(() =>
       weddingDate.value.toLocaleDateString("hr-HR", {
@@ -149,29 +168,42 @@ export default {
       currentSub.value = defaults[cat] || null;
     };
 
-    const handleOpenChat = ({ type, subjectId, title }) => {
+    const handleOpenChat = async ({ type, subjectId, title }) => {
       let chat = chats.value.find(
-        (c) => c.type === type && c.subjectId === subjectId,
+        (c) => c.type === type && String(c.subjectId) === String(subjectId),
       );
 
       if (!chat) {
-        const newId = chats.value.length
-          ? Math.max(...chats.value.map((c) => c.id)) + 1
-          : 1;
-
-        chat = { id: newId, type, subjectId, title };
-        chats.value.push(chat);
+        try {
+          const res = await api.post("/chats", { type, subjectId, title });
+          chat = {
+            id: res.data._id,
+            type: res.data.type,
+            subjectId: res.data.subjectId,
+            title: res.data.title,
+          };
+          chats.value.push(chat);
+        } catch (err) {
+          console.error("Failed to create chat:", err);
+          return;
+        }
       }
 
       currentCategory.value = "chat";
       currentSub.value = `chat-${chat.id}`;
     };
 
-    const handleDeleteChat = (chatId) => {
+    const handleDeleteChat = async (chatId) => {
       const chat = chats.value.find((c) => c.id === chatId);
       const title = chat ? chat.title : chatId;
 
       if (!confirm(`Želiš li stvarno obrisati razgovor "${title}"?`)) return;
+
+      try {
+        await api.delete(`/chats/${chatId}`);
+      } catch (err) {
+        console.error("Failed to delete chat:", err);
+      }
 
       chats.value = chats.value.filter((c) => c.id !== chatId);
 
@@ -191,10 +223,20 @@ export default {
 
     const budgetPlanned = ref(0);
     const budgetSpent = ref(0);
+    const guests = ref([]);
+    const notes = ref([]);
 
     const onBudgetUpdated = ({ planned, spent }) => {
       budgetPlanned.value = planned;
       budgetSpent.value = spent;
+    };
+
+    const onGuestsUpdated = (updatedGuests) => {
+      guests.value = updatedGuests;
+    };
+
+    const onNotesUpdated = (updatedNotes) => {
+      notes.value = updatedNotes;
     };
 
     return {
@@ -214,6 +256,10 @@ export default {
       budgetPlanned,
       budgetSpent,
       onBudgetUpdated,
+      guests,
+      onGuestsUpdated,
+      notes,
+      onNotesUpdated,
     };
   },
 };

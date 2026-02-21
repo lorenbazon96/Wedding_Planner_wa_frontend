@@ -23,8 +23,8 @@
             <input
               type="checkbox"
               class="form-check-input"
-              v-model="note.done"
-              @click.stop="note.done = !note.done"
+              :checked="note.done"
+              @click.stop="updateNoteDoneDebounced(note)"
             />
             <span
               class="priority-dot"
@@ -81,14 +81,8 @@
       </div>
     </div>
     <div v-else-if="category === 'chat'" class="d-flex flex-column flex-grow-1">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="mb-3">
         <h6 class="mb-0 fw-bold">Chats</h6>
-        <button
-          class="btn btn-sm btn-outline-primary rounded-pill"
-          type="button"
-        >
-          + New
-        </button>
       </div>
 
       <div class="chat-list">
@@ -201,6 +195,7 @@ import halla from "@/assets/halla.png";
 import cake from "@/assets/cake.png";
 import dance from "@/assets/dance.png";
 import trash from "@/assets/trash.png";
+import api from "../api.js";
 
 export default {
   name: "SubMenu",
@@ -231,22 +226,8 @@ export default {
   },
   data() {
     return {
-      notes: [
-        {
-          id: 1,
-          title: "Checklist for photographer",
-          priority: "high",
-          done: false,
-        },
-        {
-          id: 2,
-          title: "Things to ask the hall",
-          priority: "medium",
-          done: true,
-        },
-        { id: 3, title: "Guests to call", priority: "low", done: false },
-      ],
       trash,
+      noteUpdateTimeouts: {},
     };
   },
   computed: {
@@ -368,24 +349,49 @@ export default {
       }
       return (words[0][0] + words[words.length - 1][0]).toUpperCase();
     },
-    addNote() {
-      const id = this.notes.length
-        ? Math.max(...this.notes.map((n) => n.id)) + 1
-        : 1;
-      this.notes.push({
-        id,
-        title: "New note",
-        priority: "low",
-        done: false,
-      });
-      this.$emit("select-sub", "note-" + id);
-    },
-    deleteNote(id) {
-      this.notes = this.notes.filter((n) => n.id !== id);
-      if ("note-" + id === this.activeSub) {
-        const first = this.notes[0];
-        this.$emit("select-sub", first ? "note-" + first.id : "");
+    async addNote() {
+      try {
+        const res = await api.post("/notes", {
+          title: "New note",
+          priority: "low",
+          done: false,
+          text: "",
+          image: "",
+        });
+        const newNote = { ...res.data, id: res.data._id };
+        const updated = [...this.notes, newNote];
+        this.$emit("notes-updated", updated);
+        this.$emit("select-sub", "note-" + newNote.id);
+      } catch (err) {
+        console.error("Failed to add note:", err);
       }
+    },
+    async deleteNote(id) {
+      try {
+        await api.delete(`/notes/${id}`);
+        const updated = this.notes.filter((n) => n.id !== id);
+        this.$emit("notes-updated", updated);
+        if ("note-" + id === this.activeSub) {
+          const first = updated[0];
+          this.$emit("select-sub", first ? "note-" + first.id : "");
+        }
+      } catch (err) {
+        console.error("Failed to delete note:", err);
+      }
+    },
+    updateNoteDoneDebounced(note) {
+      const updated = this.notes.map((n) =>
+        n.id === note.id ? { ...n, done: !n.done } : n,
+      );
+      this.$emit("notes-updated", updated);
+      clearTimeout(this.noteUpdateTimeouts[note.id]);
+      this.noteUpdateTimeouts[note.id] = setTimeout(async () => {
+        try {
+          await api.put(`/notes/${note.id}`, { done: !note.done });
+        } catch (err) {
+          console.error("Failed to update note:", err);
+        }
+      }, 400);
     },
   },
 };
