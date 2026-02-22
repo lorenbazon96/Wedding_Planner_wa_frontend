@@ -12,12 +12,71 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ConfettiCard",
+
   data() {
     return {
       noteText: "",
+      debounceTimer: null,
     };
+  },
+
+  methods: {
+    async saveNote() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/confetti",
+          { noteText: this.noteText },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+      } catch (err) {
+        console.error(
+          "SAVE CONFETTI ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+
+    async fetchNote() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/confetti", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        this.noteText = res.data.noteText || "";
+      } catch (err) {
+        console.error(
+          "FETCH CONFETTI ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveNote();
+      }, 600);
+    },
+  },
+
+  watch: {
+    noteText() {
+      this.debouncedSave();
+    },
+  },
+
+  mounted() {
+    this.fetchNote();
   },
 };
 </script>

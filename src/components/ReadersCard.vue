@@ -59,20 +59,88 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "ReadersCard",
+
   data() {
     return {
       readers: [{ fullName: "", reading: "", done: false }],
+      debounceTimer: null,
     };
   },
+
   methods: {
     addReader() {
       this.readers.push({ fullName: "", reading: "", done: false });
     },
+
     removeReader(index) {
       this.readers.splice(index, 1);
+      this.debouncedSave();
     },
+
+    async saveReaders() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/readers",
+          { readers: this.readers },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (err) {
+        console.error("SAVE READERS ERROR:", err.response?.data || err.message);
+      }
+    },
+
+    async fetchReaders() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/readers", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.data?.readers?.length) {
+          this.readers = res.data.readers;
+        }
+      } catch (err) {
+        console.error(
+          "FETCH READERS ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveReaders();
+      }, 600);
+    },
+  },
+
+  watch: {
+    readers: {
+      handler() {
+        this.debouncedSave();
+      },
+      deep: true,
+    },
+  },
+
+  mounted() {
+    this.fetchReaders();
   },
 };
 </script>

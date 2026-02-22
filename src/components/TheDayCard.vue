@@ -46,19 +46,81 @@
     </div>
   </div>
 </template>
+
 <script>
+import axios from "axios";
+
 export default {
   name: "TheDayCard",
   data() {
-    return { locations: [{ name: "", time: "", address: "" }] };
+    return {
+      locations: [{ name: "", time: "", address: "" }],
+      debounceTimer: null,
+    };
   },
   methods: {
     addLocation() {
       this.locations.push({ name: "", time: "", address: "" });
     },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveTheDay();
+      }, 600);
+    },
+
+    async saveTheDay() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/the-day",
+          { locations: this.locations },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+      } catch (err) {
+        console.error("SAVE THE DAY ERROR:", err.response?.data || err.message);
+      }
+    },
+
+    async fetchTheDay() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/the-day", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data?.locations?.length) {
+          this.locations = res.data.locations;
+        }
+      } catch (err) {
+        console.error(
+          "FETCH THE DAY ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+  },
+
+  watch: {
+    locations: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+  },
+
+  mounted() {
+    this.fetchTheDay();
   },
 };
 </script>
+
 <style scoped>
 .menu-card {
   background-color: #fff;

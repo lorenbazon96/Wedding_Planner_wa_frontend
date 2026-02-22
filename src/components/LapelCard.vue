@@ -101,8 +101,11 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "LapelCard",
+
   data() {
     return {
       lapels: {
@@ -114,28 +117,117 @@ export default {
       notes: "",
       imageFile: null,
       imagePreview: null,
+      allLapels: [],
+      debounceTimer: null,
     };
   },
+
   methods: {
     addAssistant() {
       this.assistants.push({ name: "", checked: false });
     },
+
     onImageChange(event) {
       const file = event.target.files[0];
-      if (!file) {
-        this.imageFile = null;
-        this.imagePreview = null;
-        return;
-      }
+      if (!file) return;
 
       this.imageFile = file;
-      // lokalni preview (u memoriji browsera)
       this.imagePreview = URL.createObjectURL(file);
+
+      this.debouncedSave();
+    },
+
+    async saveLapels() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/lapels",
+          {
+            women: this.lapels.women,
+            men: this.lapels.men,
+            children: this.lapels.children,
+            assistants: this.assistants,
+            notes: this.notes,
+            image: null, // zasad
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    async fetchLapels() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get("http://localhost:5000/api/lapels", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const lapel = response.data;
+        if (!lapel) return;
+
+        this.lapels = {
+          women: lapel.women ?? 0,
+          men: lapel.men ?? 0,
+          children: lapel.children ?? 0,
+        };
+
+        this.assistants = lapel.assistants?.length
+          ? lapel.assistants
+          : [{ name: "", checked: false }];
+
+        this.notes = lapel.notes ?? "";
+
+        this.imagePreview = lapel.image
+          ? `http://localhost:5000${lapel.image}`
+          : null;
+      } catch (error) {
+        console.error("FETCH ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveLapels();
+      }, 800);
+    },
+  },
+
+  mounted() {
+    this.fetchLapels();
+  },
+
+  watch: {
+    lapels: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+    assistants: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+    notes() {
+      this.debouncedSave();
     },
   },
 };
 </script>
-
 <style scoped>
 .content-panel {
   background: rgba(244, 231, 204, 0.95);

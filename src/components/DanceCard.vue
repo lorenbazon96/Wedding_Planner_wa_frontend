@@ -65,18 +65,79 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "DanceCard",
   data() {
     return {
       song: "",
       schedule: [{ date: "", time: "", place: "", confirmed: false }],
+      debounceTimer: null,
     };
   },
   methods: {
     addRow() {
       this.schedule.push({ date: "", time: "", place: "", confirmed: false });
     },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveDance();
+      }, 600);
+    },
+
+    async saveDance() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/dance",
+          { song: this.song, schedule: this.schedule },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+      } catch (err) {
+        console.error("SAVE DANCE ERROR:", err.response?.data || err.message);
+      }
+    },
+
+    async fetchDance() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/dance", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data) {
+          this.song = res.data.song || "";
+          this.schedule = res.data.schedule?.length
+            ? res.data.schedule
+            : [{ date: "", time: "", place: "", confirmed: false }];
+        }
+      } catch (err) {
+        console.error("FETCH DANCE ERROR:", err.response?.data || err.message);
+      }
+    },
+  },
+
+  watch: {
+    song() {
+      this.debouncedSave();
+    },
+    schedule: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+  },
+
+  mounted() {
+    this.fetchDance();
   },
 };
 </script>

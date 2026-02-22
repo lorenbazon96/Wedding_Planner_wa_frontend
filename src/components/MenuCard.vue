@@ -53,27 +53,72 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "MenuCard",
+
   data() {
     return {
-      menu: [
-        {
-          name: "",
-          time: "",
-          description: "",
-        },
-      ],
+      menu: [{ name: "", time: "", description: "" }],
+      debounceTimer: null,
     };
   },
+
   methods: {
     addDish() {
-      this.menu.push({
-        name: "",
-        time: "",
-        description: "",
-      });
+      this.menu.push({ name: "", time: "", description: "" });
     },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveMenu();
+      }, 600);
+    },
+
+    async saveMenu() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/menu",
+          { menu: this.menu },
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+      } catch (err) {
+        console.error("SAVE MENU ERROR:", err.response?.data || err.message);
+      }
+    },
+
+    async fetchMenu() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/menu", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.data && res.data.menu) this.menu = res.data.menu;
+      } catch (err) {
+        console.error("FETCH MENU ERROR:", err.response?.data || err.message);
+      }
+    },
+  },
+
+  watch: {
+    menu: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+  },
+
+  mounted() {
+    this.fetchMenu();
   },
 };
 </script>

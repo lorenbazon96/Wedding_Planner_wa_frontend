@@ -27,13 +27,87 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "DateAndTimeCard",
+
   data() {
     return {
-      selectedDate: new Date().toISOString().substr(0, 10),
-      selectedTime: "12:00",
+      selectedDate: "",
+      selectedTime: "",
+      debounceTimer: null,
     };
+  },
+
+  methods: {
+    async saveDateTime() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/church-datetime",
+          {
+            date: this.selectedDate,
+            time: this.selectedTime,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    async fetchDateTime() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get(
+          "http://localhost:5000/api/church-datetime",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!res.data) return;
+
+        this.selectedDate = res.data.date;
+        this.selectedTime = res.data.time;
+      } catch (error) {
+        console.error("FETCH ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveDateTime();
+      }, 600);
+    },
+  },
+
+  mounted() {
+    this.selectedDate = new Date().toISOString().slice(0, 10);
+    this.selectedTime = "12:00";
+
+    this.fetchDateTime();
+  },
+
+  watch: {
+    selectedDate() {
+      this.debouncedSave();
+    },
+    selectedTime() {
+      this.debouncedSave();
+    },
   },
 };
 </script>

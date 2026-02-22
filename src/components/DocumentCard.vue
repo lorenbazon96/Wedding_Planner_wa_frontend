@@ -81,21 +81,106 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "DocumentCard",
+
   data() {
     return {
       brideDocs: [{ name: "", type: "" }],
       groomDocs: [{ name: "", type: "" }],
+      debounceTimer: null,
     };
   },
+
   methods: {
     addBrideDoc() {
       this.brideDocs.push({ name: "", type: "" });
     },
+
     addGroomDoc() {
       this.groomDocs.push({ name: "", type: "" });
     },
+
+    async saveDocuments() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/documents",
+          {
+            brideDocs: this.brideDocs,
+            groomDocs: this.groomDocs,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (err) {
+        console.error(
+          "SAVE DOCUMENTS ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+
+    async fetchDocuments() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/documents", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.data) return;
+
+        this.brideDocs = res.data.brideDocs?.length
+          ? res.data.brideDocs
+          : [{ name: "", type: "" }];
+
+        this.groomDocs = res.data.groomDocs?.length
+          ? res.data.groomDocs
+          : [{ name: "", type: "" }];
+      } catch (err) {
+        console.error(
+          "FETCH DOCUMENTS ERROR:",
+          err.response?.data || err.message,
+        );
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveDocuments();
+      }, 600);
+    },
+  },
+
+  watch: {
+    brideDocs: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+    groomDocs: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
+    },
+  },
+
+  mounted() {
+    this.fetchDocuments();
   },
 };
 </script>

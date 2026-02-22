@@ -34,24 +34,25 @@
       />
     </div>
 
-    <div class="mt-auto">
-      <button class="btn btn-dark rounded-pill w-100" @click="saveDetails">
-        Save
-      </button>
-    </div>
+    <div class="mt-auto"></div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "APriestCard",
+
   data() {
     return {
       priestName: "",
-      selectedDate: new Date().toISOString().substr(0, 10),
+      selectedDate: "",
       selectedTime: "",
+      debounceTimer: null,
     };
   },
+
   computed: {
     minDate() {
       const today = new Date();
@@ -61,15 +62,82 @@ export default {
       return `${yyyy}-${mm}-${dd}`;
     },
   },
+
   methods: {
-    saveDetails() {
-      if (!this.priestName || !this.selectedDate || !this.selectedTime) {
-        alert("Please enter priest's name, date, and time.");
-        return;
+    async savePriest() {
+      try {
+        if (!this.priestName || !this.selectedDate || !this.selectedTime)
+          return;
+
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/priest-meeting",
+          {
+            priestName: this.priestName,
+            date: this.selectedDate,
+            time: this.selectedTime,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
       }
-      const meetingSlot = `${this.selectedDate} ${this.selectedTime}`;
-      console.log("Saved:", this.priestName, meetingSlot);
-      alert(`Saved: ${this.priestName} for ${meetingSlot}`);
+    },
+
+    async fetchPriest() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get(
+          "http://localhost:5000/api/priest-meeting",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!res.data) return;
+
+        this.priestName = res.data.priestName;
+        this.selectedDate = res.data.date;
+        this.selectedTime = res.data.time;
+      } catch (error) {
+        console.error("FETCH ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.savePriest();
+      }, 600);
+    },
+  },
+
+  mounted() {
+    const today = new Date().toISOString().slice(0, 10);
+    this.selectedDate = today;
+
+    this.fetchPriest();
+  },
+
+  watch: {
+    priestName() {
+      this.debouncedSave();
+    },
+    selectedDate() {
+      this.debouncedSave();
+    },
+    selectedTime() {
+      this.debouncedSave();
     },
   },
 };

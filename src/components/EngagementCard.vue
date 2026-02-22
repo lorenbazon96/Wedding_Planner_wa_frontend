@@ -74,18 +74,108 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "EngagementCard",
+
   data() {
     return {
-      startDate: new Date().toISOString().substr(0, 10),
-      endDate: new Date().toISOString().substr(0, 10),
+      startDate: "",
+      endDate: "",
       schedule: [{ date: "", time: "", place: "", confirmed: false }],
+      debounceTimer: null,
     };
   },
+
   methods: {
     addRow() {
-      this.schedule.push({ date: "", time: "", place: "", confirmed: false });
+      this.schedule.push({
+        date: "",
+        time: "",
+        place: "",
+        confirmed: false,
+      });
+    },
+
+    async saveEngagement() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        await axios.post(
+          "http://localhost:5000/api/engagement-course",
+          {
+            startDate: this.startDate,
+            endDate: this.endDate,
+            schedule: this.schedule,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+      } catch (error) {
+        console.error("SAVE ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    async fetchEngagement() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get(
+          "http://localhost:5000/api/engagement-course",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!res.data) return;
+
+        this.startDate = res.data.startDate;
+        this.endDate = res.data.endDate;
+        this.schedule =
+          res.data.schedule?.length > 0
+            ? res.data.schedule
+            : [{ date: "", time: "", place: "", confirmed: false }];
+      } catch (error) {
+        console.error("FETCH ERROR:", error.response?.data || error.message);
+      }
+    },
+
+    debouncedSave() {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.saveEngagement();
+      }, 700);
+    },
+  },
+
+  mounted() {
+    const today = new Date().toISOString().slice(0, 10);
+    this.startDate = today;
+    this.endDate = today;
+
+    this.fetchEngagement();
+  },
+
+  watch: {
+    startDate() {
+      this.debouncedSave();
+    },
+    endDate() {
+      this.debouncedSave();
+    },
+    schedule: {
+      deep: true,
+      handler() {
+        this.debouncedSave();
+      },
     },
   },
 };
