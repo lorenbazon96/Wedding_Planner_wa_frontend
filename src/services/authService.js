@@ -21,3 +21,18 @@ export const updateProfile = async (data) => {
   const res = await api.put("/auth/profile", data);
   return res.data;
 };
+
+export const deleteAccount = async () => {
+  const res = await api.delete("/auth/profile");
+  return res.data;
+};
+
+export const getVendorProfile = async () => {
+  const res = await api.get("/auth/vendor-profile");
+  return res.data;
+};
+
+export const updateVendorProfile = async (data) => {
+  const res = await api.put("/auth/vendor-profile", data);
+  return res.data;
+};

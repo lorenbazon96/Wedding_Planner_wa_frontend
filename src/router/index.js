@@ -4,6 +4,7 @@ import LoginView from "../views/LoginView.vue";
 import RegisterView from "../views/RegisterView.vue";
 import WelcomeView from "../views/WelcomeView.vue";
 import EditView from "../views/EditView.vue";
+import VendorDashboardView from "../views/VendorDashboardView.vue";
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
     path: "/edit",
     name: "edit",
     component: EditView,
+  },
+  {
+    path: "/vendor-dashboard",
+    name: "vendor-dashboard",
+    component: VendorDashboardView,
   },
 ];
 

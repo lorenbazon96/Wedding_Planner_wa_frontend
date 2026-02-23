@@ -6,7 +6,7 @@
       <div class="d-flex align-items-center gap-3">
         <img src="@/assets/logo.png" alt="Wedding Planner" class="top-logo" />
 
-        <router-link to="/edit" class="wedding-info-link text-decoration-none">
+        <router-link v-if="!isGuest" to="/edit" class="wedding-info-link text-decoration-none">
           <div class="d-flex align-items-center gap-3">
             <img
               v-if="coverImage"
@@ -25,9 +25,9 @@
       </div>
       <div class="d-flex flex-column align-items-end gap-2">
         <button class="remaining-pill logout-btn" @click="logOut">
-          Log out
+          {{ isGuest ? 'Home' : 'Log out' }}
         </button>
-        <div class="remaining-pill">{{ daysLeftMessage }}</div>
+        <div v-if="!isGuest" class="remaining-pill">{{ daysLeftMessage }}</div>
       </div>
     </header>
 
@@ -88,8 +88,11 @@ export default {
     const brideName = ref("...");
     const groomName = ref("...");
     const coverImage = ref(null);
+    const isGuest = ref(!localStorage.getItem("token"));
 
     onMounted(async () => {
+      if (isGuest.value) return;
+
       const profile = await getProfile();
       brideName.value = profile.brideName || "Bride";
       groomName.value = profile.groomName || "Groom";
@@ -218,6 +221,7 @@ export default {
       }
     };
     const logOut = () => {
+      localStorage.removeItem("token");
       window.location.href = "/";
     };
 
@@ -240,6 +244,7 @@ export default {
     };
 
     return {
+      isGuest,
       weddingDate,
       weddingDateDisplay,
       daysLeftMessage,

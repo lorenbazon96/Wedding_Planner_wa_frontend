@@ -56,7 +56,11 @@ export default {
           password: this.password,
         });
         alert(`Welcome back, ${user.username}`);
-        this.$router.push("/welcome");
+        if (user.role === "vendor") {
+          this.$router.push("/vendor-dashboard");
+        } else {
+          this.$router.push("/welcome");
+        }
       } catch (err) {
         alert(err.response?.data?.message || "Login failed");
       }

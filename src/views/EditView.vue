@@ -54,12 +54,13 @@
         <button class="btn btn-gold" @click="saveChanges">Save Changes</button>
         <button class="btn btn-gold" @click="goBack">Back</button>
       </div>
+      <button class="btn btn-danger-custom mt-4" @click="deleteMyAccount">Delete Account</button>
     </div>
   </div>
 </template>
 
 <script>
-import { getProfile, updateProfile } from "@/services/authService.js";
+import { getProfile, updateProfile, deleteAccount } from "@/services/authService.js";
 
 export default {
   name: "EditView",
@@ -100,6 +101,16 @@ export default {
     },
     goBack() {
       this.$router.push("/welcome");
+    },
+    async deleteMyAccount() {
+      if (!confirm("Jesi li siguran/na da želiš obrisati svoj račun? Ova radnja je nepovratna!")) return;
+      try {
+        await deleteAccount();
+        localStorage.removeItem("token");
+        window.location.href = "/";
+      } catch (err) {
+        alert(err.response?.data?.message || "Failed to delete account");
+      }
     },
     onImageChange(e) {
       const file = e.target.files[0];
@@ -206,5 +217,19 @@ export default {
   border: 2px solid #08182e;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   display: none;
+}
+
+.btn-danger-custom {
+  background: #c0392b;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1.4rem;
+  border-radius: 999px;
+  transition: background 0.3s ease;
+}
+
+.btn-danger-custom:hover {
+  background: #e74c3c;
 }
 </style>
