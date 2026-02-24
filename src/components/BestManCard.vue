@@ -102,7 +102,7 @@ export default {
         if (!token) return;
 
         const response = await api.get("/bestman");
-        const data = rasponse.data;
+        const data = response.data;
 
         if (data) {
           this.name = data.name;
@@ -189,6 +189,7 @@ export default {
   accent-color: #d4af37;
 }
 </style>
+
 
 
 
