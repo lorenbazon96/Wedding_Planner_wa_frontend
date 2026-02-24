@@ -102,15 +102,13 @@ export default {
         if (!token) return;
 
         const response = await api.get("/bestman");
+        const data = rasponse.data;
 
-        this.allBestMen = response.data;
-
-        if (this.allBestMen.length > 0) {
-          const last = this.allBestMen[this.allBestMen.length - 1];
-          this.name = last.name;
-          this.accepted = last.accepted;
-          this.tasks = last.tasks.length
-            ? last.tasks
+        if (data) {
+          this.name = data.name;
+          this.accepted = data.accepted;
+          this.tasks = data.tasks && data.tasks.length
+            ? data.tasks
             : [{ name: "", done: false }];
         }
       } catch (error) {
@@ -191,5 +189,6 @@ export default {
   accent-color: #d4af37;
 }
 </style>
+
 
 
