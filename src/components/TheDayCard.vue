@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "TheDayCard",
@@ -72,14 +72,9 @@ export default {
 
     async saveTheDay() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/the-day",
-          { locations: this.locations },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        await api.post("/the-day", {
+          locations: this.locations,
+        });
       } catch (err) {
         console.error("SAVE THE DAY ERROR:", err.response?.data || err.message);
       }
@@ -87,13 +82,7 @@ export default {
 
     async fetchTheDay() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/the-day", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+        const res = await api.get("/the-day");
         if (res.data?.locations?.length) {
           this.locations = res.data.locations;
         }

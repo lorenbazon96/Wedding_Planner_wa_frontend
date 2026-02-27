@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "MenuCard",
@@ -79,14 +79,9 @@ export default {
 
     async saveMenu() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/menu",
-          { menu: this.menu },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        await api.post("/menu", {
+          menu: this.menu,
+        });
       } catch (err) {
         console.error("SAVE MENU ERROR:", err.response?.data || err.message);
       }
@@ -94,13 +89,7 @@ export default {
 
     async fetchMenu() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/menu", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+        const res = await api.get("/menu");
         if (res.data && res.data.menu) this.menu = res.data.menu;
       } catch (err) {
         console.error("FETCH MENU ERROR:", err.response?.data || err.message);

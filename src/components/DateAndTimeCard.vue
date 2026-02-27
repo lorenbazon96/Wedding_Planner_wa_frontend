@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "DateAndTimeCard",
@@ -43,21 +43,10 @@ export default {
   methods: {
     async saveDateTime() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/church-datetime",
-          {
-            date: this.selectedDate,
-            time: this.selectedTime,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/church-datetime", {
+          date: this.selectedDate,
+          time: this.selectedTime,
+        });
       } catch (error) {
         console.error("SAVE ERROR:", error.response?.data || error.message);
       }
@@ -65,18 +54,7 @@ export default {
 
     async fetchDateTime() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get(
-          "http://localhost:5000/api/church-datetime",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
+        const res = await api.get("/church-datetime");
         if (!res.data) return;
 
         this.selectedDate = res.data.date;

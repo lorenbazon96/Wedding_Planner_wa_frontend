@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "LapelCard",
@@ -139,25 +139,14 @@ export default {
 
     async saveLapels() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/lapels",
-          {
-            women: this.lapels.women,
-            men: this.lapels.men,
-            children: this.lapels.children,
-            assistants: this.assistants,
-            notes: this.notes,
-            image: null, // zasad
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/lapels", {
+          women: this.lapels.women,
+          men: this.lapels.men,
+          children: this.lapels.children,
+          assistants: this.assistants,
+          notes: this.notes,
+          image: null,
+        });
       } catch (error) {
         console.error("SAVE ERROR:", error.response?.data || error.message);
       }
@@ -165,14 +154,7 @@ export default {
 
     async fetchLapels() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const response = await axios.get("http://localhost:5000/api/lapels", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get("/lapels");
 
         const lapel = response.data;
         if (!lapel) return;
@@ -189,9 +171,9 @@ export default {
 
         this.notes = lapel.notes ?? "";
 
-        this.imagePreview = lapel.image
-          ? `http://localhost:5000${lapel.image}`
-          : null;
+        const API_URL = import.meta.env.VITE_API_URL;
+
+        this.imagePreview = lapel.image ? `${API_URL}${lapel.image}` : null;
       } catch (error) {
         console.error("FETCH ERROR:", error.response?.data || error.message);
       }

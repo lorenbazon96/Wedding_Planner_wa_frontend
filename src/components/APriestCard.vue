@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "APriestCard",
@@ -72,19 +72,11 @@ export default {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        await axios.post(
-          "http://localhost:5000/api/priest-meeting",
-          {
-            priestName: this.priestName,
-            date: this.selectedDate,
-            time: this.selectedTime,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/priest-meeting", {
+          priestName: this.priestName,
+          date: this.selectedDate,
+          time: this.selectedTime,
+        });
       } catch (error) {
         console.error("SAVE ERROR:", error.response?.data || error.message);
       }
@@ -95,14 +87,7 @@ export default {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get(
-          "http://localhost:5000/api/priest-meeting",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const res = await api.get("/priest-meeting");
 
         if (!res.data) return;
 

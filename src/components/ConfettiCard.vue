@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "ConfettiCard",
@@ -27,14 +27,7 @@ export default {
   methods: {
     async saveNote() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/confetti",
-          { noteText: this.noteText },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        await api.post("/confetti", { noteText: this.noteText });
       } catch (err) {
         console.error(
           "SAVE CONFETTI ERROR:",
@@ -45,12 +38,7 @@ export default {
 
     async fetchNote() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/confetti", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/confetti");
 
         this.noteText = res.data.noteText || "";
       } catch (err) {

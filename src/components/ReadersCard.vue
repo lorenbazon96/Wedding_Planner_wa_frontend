@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "ReadersCard",
@@ -83,18 +83,9 @@ export default {
 
     async saveReaders() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/readers",
-          { readers: this.readers },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/readers", {
+          readers: this.readers,
+        });
       } catch (err) {
         console.error("SAVE READERS ERROR:", err.response?.data || err.message);
       }
@@ -102,14 +93,7 @@ export default {
 
     async fetchReaders() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/readers", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get("/readers");
 
         if (res.data?.readers?.length) {
           this.readers = res.data.readers;

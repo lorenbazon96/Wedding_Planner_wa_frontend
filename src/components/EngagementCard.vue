@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "EngagementCard",
@@ -100,22 +100,11 @@ export default {
 
     async saveEngagement() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/engagement-course",
-          {
-            startDate: this.startDate,
-            endDate: this.endDate,
-            schedule: this.schedule,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/engagement-course", {
+          startDate: this.startDate,
+          endDate: this.endDate,
+          schedule: this.schedule,
+        });
       } catch (error) {
         console.error("SAVE ERROR:", error.response?.data || error.message);
       }
@@ -123,17 +112,7 @@ export default {
 
     async fetchEngagement() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get(
-          "http://localhost:5000/api/engagement-course",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        const res = await api.get("/engagement-course");
 
         if (!res.data) return;
 

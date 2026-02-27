@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "DanceCard",
@@ -90,14 +90,10 @@ export default {
 
     async saveDance() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/dance",
-          { song: this.song, schedule: this.schedule },
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        await api.post("/dance", {
+          song: this.song,
+          schedule: this.schedule,
+        });
       } catch (err) {
         console.error("SAVE DANCE ERROR:", err.response?.data || err.message);
       }
@@ -105,12 +101,7 @@ export default {
 
     async fetchDance() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/dance", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get("/dance");
 
         if (res.data) {
           this.song = res.data.song || "";

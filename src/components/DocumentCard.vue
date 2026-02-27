@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../api.js";
 
 export default {
   name: "DocumentCard",
@@ -105,21 +105,10 @@ export default {
 
     async saveDocuments() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        await axios.post(
-          "http://localhost:5000/api/documents",
-          {
-            brideDocs: this.brideDocs,
-            groomDocs: this.groomDocs,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
+        await api.post("/documents", {
+          brideDocs: this.brideDocs,
+          groomDocs: this.groomDocs,
+        });
       } catch (err) {
         console.error(
           "SAVE DOCUMENTS ERROR:",
@@ -130,14 +119,7 @@ export default {
 
     async fetchDocuments() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const res = await axios.get("http://localhost:5000/api/documents", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const res = await api.get("/documents");
 
         if (!res.data) return;
 
